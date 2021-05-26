@@ -13,7 +13,13 @@ import java.lang.IllegalStateException
 class CheckIsolatedLibsFlow1 : FlowLogic<Int>() {
     @Suspendable
     override fun call(): Int {
-        return ClassWithModifiableStatic.modifiableStaticCounter++
+        val currentCounter = ClassWithModifiableStatic.modifiableStaticCounter
+        if (currentCounter == 0) {
+            ClassWithModifiableStatic.modifiableStaticCounter = 99
+        } else {
+            ClassWithModifiableStatic.modifiableStaticCounter = 0
+        }
+        return currentCounter
     }
 }
 

@@ -7,12 +7,11 @@ import net.corda.joel.cordapp.CheckIsolatedLibsFlow1
 import net.corda.joel.cordapp.CheckServiceRegistryEmpty
 import net.corda.joel.cordapp2.CheckIsolatedLibsFlow2
 import net.corda.v5.base.util.NetworkHostAndPort.Companion.parse
+import java.lang.IllegalStateException
 
-fun main() {
+fun main(args: Array<String>) {
     val testClient = TestClient()
-
     testClient.test()
-
     testClient.close()
 }
 
@@ -26,10 +25,15 @@ class TestClient {
     private val cordaRpcOpsProxy = cordaRpcOpsConnection.proxy
 
     fun test() {
-        // Both flows import the same library. Each flow should have its own copy of the library, and thus see the
-        // counter increment from zero.
-        (0..5).forEach { x -> assert(x == cordaRpcOpsProxy.startFlowDynamic(CheckIsolatedLibsFlow1::class.java).returnValue.get()) }
-        (0..5).forEach { x -> assert(x == cordaRpcOpsProxy.startFlowDynamic(CheckIsolatedLibsFlow2::class.java).returnValue.get()) }
+        // Running the flow sets the first CorDapp's static to 99.
+        cordaRpcOpsProxy.startFlowDynamic(CheckIsolatedLibsFlow1::class.java).returnValue.get()
+        // We check that the second CorDapp's static is still 0.
+        if (cordaRpcOpsProxy.startFlowDynamic(CheckIsolatedLibsFlow1::class.java).returnValue.get() != 0) {
+            throw IllegalStateException("CorDapp library static was not correct isolated.")
+        }
+        // We run the flows again to reset both statics to zero.
+        cordaRpcOpsProxy.startFlowDynamic(CheckIsolatedLibsFlow1::class.java).returnValue.get()
+        cordaRpcOpsProxy.startFlowDynamic(CheckIsolatedLibsFlow1::class.java).returnValue.get()
 
         cordaRpcOpsProxy.startFlowDynamic(CheckCanSeeBundlesInCoreSandbox::class.java)
         cordaRpcOpsProxy.startFlowDynamic(CheckCannotSeeBundlesInNonCoreSandbox::class.java)
