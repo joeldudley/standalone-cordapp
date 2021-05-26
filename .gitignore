@@ -1,0 +1,6 @@
+.idea/
+.gradle/
+build/
+client/build/
+cordapp/build/
+cordapp2/build/

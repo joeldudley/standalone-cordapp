@@ -1,0 +1,110 @@
+buildscript {
+    Properties constants = new Properties()
+    file("$projectDir/./constants.properties").withInputStream { constants.load(it) }
+
+    ext {
+        corda_release_group = constants.getProperty("cordaReleaseGroup")
+        corda_release_version = constants.getProperty("cordaVersion")
+        corda_gradle_plugins_version = constants.getProperty("gradlePluginsVersion")
+        default_library_version = constants.getProperty("defaultLibraryVersion")
+        kotlin_version = constants.getProperty("kotlinVersion")
+        quasar_version = constants.getProperty("quasarVersion")
+        corda_platform_version = constants.getProperty("platformVersion").toInteger()
+        osgi_version = constants.getProperty("osgiVersion")
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        maven { url 'https://software.r3.com/artifactory/corda-releases' }
+        maven { url = "https://software.r3.com/artifactory/corda-dev" }
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "net.corda.plugins:cordapp-cpk:$corda_gradle_plugins_version"
+        classpath "net.corda.plugins:cordformation:$corda_gradle_plugins_version"
+        classpath "net.corda.plugins:quasar-utils:$corda_gradle_plugins_version"
+    }
+}
+
+allprojects {
+    apply plugin: 'kotlin'
+
+    repositories {
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+        maven { url 'https://software.r3.com/artifactory/corda' }
+        maven { url 'https://jitpack.io' }
+    }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+        kotlinOptions {
+            languageVersion = "1.2"
+            apiVersion = "1.2"
+            jvmTarget = "1.8"
+            javaParameters = true   // Useful for reflection.
+        }
+    }
+}
+
+apply plugin: 'net.corda.plugins.cordformation'
+apply plugin: 'net.corda.plugins.quasar-utils'
+
+dependencies {
+    implementation "$corda_release_group:corda:$corda_release_version"
+    implementation "$corda_release_group:corda-node-api:$default_library_version"
+
+    cordapp project(":cordapp")
+    cordapp project(":cordapp2")
+}
+
+task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
+    nodeDefaults{
+        projectCordapp {
+            deploy = false
+        }
+        cordapp project(":cordapp")
+        cordapp project(":cordapp2")
+        runSchemaMigration = false
+    }
+    node {
+        name "O=Notary Node,L=Zurich,C=CH"
+        notary = [validating      : false,
+                  serviceLegalName: "O=Notary Service,L=Zurich,C=CH"
+        ]
+        p2pPort 10002
+        rpcSettings {
+            address "localhost:10003"
+            adminAddress "localhost:10004"
+        }
+        h2Port 10005
+        rpcUsers = [[ user: "user", "password": "test", "permissions": ["ALL"]]]
+        extraConfig = [
+                // Exposes an HTTP interface to the node.
+                'httpRpcSettings.address': "localhost:8888",
+                'httpRpcSettings.context.basePath': "/api",
+                'httpRpcSettings.context.description': "Exposing RPCOps interfaces as webservices",
+                'httpRpcSettings.context.title': "HTTP RPC demo",
+                'httpRpcSettings.context.version': "1",
+                // Runs against Postgres.
+                //  'dataSourceProperties.dataSourceClassName':'org.postgresql.ds.PGSimpleDataSource',
+                //  'dataSourceProperties.dataSource.url':'jdbc:postgresql://localhost:5432/postgres',
+                //  'dataSourceProperties.dataSource.password' : 'my_password',
+                //  'dataSourceProperties.dataSource.user' : 'party_a'
+        ]
+        // drivers = ['/Users/joeldudley/Desktop/postgres_node/postgresql-42.1.4.jar']
+    }
+    // A second node, if needed.
+//      node {
+//        name "O=Bloatary Node,L=Zurich,C=CH"
+//        p2pPort 10005
+//        rpcSettings {
+//            address "localhost:10006"
+//            adminAddress "localhost:10007"
+//        }
+//        rpcUsers = [[ user: "user", "password": "test", "permissions": ["ALL"]]]
+//    }
+}

@@ -1,0 +1,4 @@
+include 'cordapp'
+include 'cordapp2'
+include 'lib'
+include 'client'
