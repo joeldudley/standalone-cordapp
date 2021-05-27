@@ -11,7 +11,8 @@ dependencies {
 
     implementation "org.osgi:osgi.core:$osgi_version"
 
-    implementation project(':lib')
+    implementation project(':shared-lib')
+    implementation project(':cordapp-one-lib')
 }
 
 cordapp {

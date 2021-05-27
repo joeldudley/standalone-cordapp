@@ -1,4 +1,4 @@
 @Export
-package net.joel.lib;
+package net.joel.cordapponelib;
 
 import org.osgi.annotation.bundle.Export;
