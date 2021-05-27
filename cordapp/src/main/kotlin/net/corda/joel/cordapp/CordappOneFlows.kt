@@ -71,7 +71,7 @@ class CheckCanSeeLibraryBundleInOwnCpk : FlowLogic<Unit>() {
 class RegisterLibraryService : FlowLogic<Unit>() {
     @Suspendable
     override fun call() {
-        ClassThatRegistersService.registerService()
+        ClassThatRegistersService().registerService()
     }
 }
 
@@ -88,7 +88,30 @@ class CheckCanSeeServiceInOwnCpkLibrary : FlowLogic<Unit>() {
 
 @InitiatingFlow
 @StartableByRPC
-class CheckCanRestartFromCheckpoint(val setToFail: Boolean = false) : FlowLogic<Unit>() {
+class KillNode(private val setToFail: Boolean = false) : FlowLogic<Unit>() {
+    companion object {
+        // If we don't condition the exit on some variable, then when the node restarts it will rerun the flow and exit
+        // again.
+        private var shouldFail = false
+    }
+
+    @Suspendable
+    override fun call() {
+        if (setToFail) {
+            shouldFail = true
+
+        } else {
+            if (shouldFail) {
+                println("Process will hang.")
+                exitProcess(0)
+            }
+        }
+    }
+}
+
+@InitiatingFlow
+@StartableByRPC
+class CheckCanRestartFromCheckpoint(private val setToFail: Boolean = false) : FlowLogic<Unit>() {
     companion object {
         private var shouldFail = false
     }
@@ -96,7 +119,6 @@ class CheckCanRestartFromCheckpoint(val setToFail: Boolean = false) : FlowLogic<
     @Suspendable
     override fun call() {
         if (setToFail) {
-            println("jabba")
             shouldFail = true
 
         } else {
