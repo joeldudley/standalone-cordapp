@@ -1,9 +1,13 @@
-package net.corda.joel.cordapp2
+package net.corda.joel.cordapptwo
 
-import net.corda.joel.cordapp.SetIsolatedLibStatic
+import net.corda.joel.cordappone.DummyCordappOneContract
+import net.corda.joel.cordappone.SetIsolatedLibStatic
+import net.corda.systemflows.FinalityFlow
 import net.corda.v5.application.flows.InitiatingFlow
 import net.corda.v5.application.flows.StartableByRPC
+import net.corda.v5.application.flows.flowservices.dependencies.CordaInject
 import net.corda.v5.base.annotations.Suspendable
+import net.corda.v5.ledger.services.NotaryAwareNetworkMapCache
 import net.corda.v5.legacyapi.flows.FlowLogic
 import net.joel.sharedlib.ClassWithModifiableStatic
 import org.osgi.framework.FrameworkUtil
@@ -48,5 +52,23 @@ class CheckCannotSeeServiceInOtherCpkLibrary : FlowLogic<Unit>() {
         val bundleContext = FrameworkUtil.getBundle(this::class.java).bundleContext
         val service = bundleContext.getServiceReference("net.joel.cordapponelib.ClassThatRegistersService")
         if (service != null) throw IllegalStateException("CorDapp could find service in other CPK library.")
+    }
+}
+
+@InitiatingFlow
+@StartableByRPC
+class CheckCanBuildTxFromMultipleFlowsAndTheirLibs : FlowLogic<Unit>() {
+    @CordaInject
+    lateinit var networkMapCache: NotaryAwareNetworkMapCache
+
+    @Suspendable
+    override fun call() {
+        val notary = networkMapCache.notaryIdentities.first()
+        val txBuilder = transactionBuilderFactory.create().setNotary(notary)
+            .addOutputState(DummyCordappTwoState(), DummyCordappOneContract::class.java.name)
+            .addCommand(DummyCordappTwoCommand(), ourIdentity.owningKey)
+        txBuilder.verify()
+        val stx = txBuilder.sign()
+        flowEngine.subFlow(FinalityFlow(stx, listOf()))
     }
 }
