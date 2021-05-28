@@ -1,6 +1,5 @@
-package net.corda.joel.cordapp
+package net.corda.joel.cordappone
 
-import net.corda.v5.application.crypto.SignedData
 import net.corda.v5.application.flows.InitiatingFlow
 import net.corda.v5.application.flows.StartableByRPC
 import net.corda.v5.base.annotations.Suspendable

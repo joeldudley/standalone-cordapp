@@ -1,11 +1,10 @@
 package net.corda.joel.client
 
 import net.corda.client.rpc.CordaRPCClient
-import net.corda.joel.cordapp.*
 import net.corda.joel.cordapp2.CheckCanSeeCordappBundleInOtherCpk
 import net.corda.joel.cordapp2.CheckCannotSeeLibraryBundleInOtherCpk
-import net.corda.joel.cordapp2.CheckCannotSeeServiceInOtherCpkLibrary
 import net.corda.joel.cordapp2.CheckIsolatedLibsFlow
+import net.corda.joel.cordappone.*
 import net.corda.v5.application.flows.Flow
 import net.corda.v5.base.util.NetworkHostAndPort.Companion.parse
 import java.io.File
