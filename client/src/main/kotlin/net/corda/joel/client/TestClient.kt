@@ -2,10 +2,7 @@ package net.corda.joel.client
 
 import net.corda.client.rpc.CordaRPCClient
 import net.corda.joel.cordappone.*
-import net.corda.joel.cordapptwo.CheckCanBuildTxFromMultipleFlowsAndTheirLibs
-import net.corda.joel.cordapptwo.CheckCanSeeCordappBundleInOtherCpk
-import net.corda.joel.cordapptwo.CheckCannotSeeLibraryBundleInOtherCpk
-import net.corda.joel.cordapptwo.CheckIsolatedLibsFlow
+import net.corda.joel.cordapptwo.*
 import net.corda.v5.application.flows.Flow
 import net.corda.v5.base.util.NetworkHostAndPort.Companion.parse
 import java.io.File
@@ -34,10 +31,10 @@ class TestClient {
         testStaticIsolation()
         testBundleVisibility()
         testServiceVisibility()
-        testCombinedTransactions()
+        // TODO: Broken.
+        // testCombinedTransactions()
 
         // Enabling this causes node to exit as part of a test.
-        // Currently fails due to a bug - see CORE-1497.
         // testRestoreFromCheckpoint()
 
         // Enabling this causes node to exit as part of a test.
@@ -64,16 +61,14 @@ class TestClient {
     }
 
     private fun testServiceVisibility() {
-        // TODO: Broken.
-        // runFlowSync(CheckCannotSeeServiceInNonCoreSandbox::class.java)
+        runFlowSync(CheckCannotSeeServiceInNonCoreSandbox::class.java)
 
         // We register a service from a library of CorDapp One.
         runFlowSync(RegisterLibraryService::class.java)
         // We check the service can be found from a CorDapp bundle of CorDapp One.
         runFlowSync(CheckCanSeeServiceInOwnCpkLibrary::class.java)
         // ...but not from a CorDapp bundle of CorDapp Two.
-        // TODO: Broken.
-        // runFlowSync(CheckCannotSeeServiceInOtherCpkLibrary::class.java)
+         runFlowSync(CheckCannotSeeServiceInOtherCpkLibrary::class.java)
     }
 
     private fun testCombinedTransactions() {

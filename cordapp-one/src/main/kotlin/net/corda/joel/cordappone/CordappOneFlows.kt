@@ -38,6 +38,11 @@ class CheckCannotSeeBundlesInNonCoreSandbox : FlowLogic<Unit>() {
         val bundle = bundleContext
             .bundles
             .find { bundle -> bundle.symbolicName == "org.objenesis" }
+
+        bundleContext.bundles.forEach {
+            it.stop()
+        }
+
         if (bundle != null) throw IllegalStateException("CorDapp could find non-core bundle.")
     }
 }
