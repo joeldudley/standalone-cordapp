@@ -10,6 +10,8 @@ There are four CorDapps:
   `cordapp` dependency on a module that is not a CorDapp
 * `bad-cordapps:cordapp-imports-non-core-platform-bundle`: This CorDapp should fail to load as it tries to depend on a 
   non-core Corda platform bundle
+* `bad-cordapps:cordapp-has-same-bundle-symbolic-name`: This CorDapp should fail to load as it shares a symbolic name 
+  with CorDapp One
 
 There are also two library modules:
 

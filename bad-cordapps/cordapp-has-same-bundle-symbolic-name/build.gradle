@@ -1,0 +1,19 @@
+plugins {
+    id 'net.corda.plugins.cordapp-cpk'
+    id 'net.corda.plugins.quasar-utils'
+}
+
+cordapp {
+    targetPlatformVersion corda_platform_version
+    minimumPlatformVersion 1
+    workflow {
+        name "Template Flows"
+        versionId 1
+    }
+}
+
+tasks.named('jar', Jar) {
+    bnd """\
+Bundle-SymbolicName: \${project.group}.cordapp-one
+"""
+}
