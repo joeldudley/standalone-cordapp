@@ -1,6 +1,6 @@
 This project contains a set of CorDapps designed to test the Corda node running on OSGi.
 
-# Contents
+# CorDapps
 
 There are four CorDapps:
 
@@ -22,7 +22,11 @@ There are also two library modules:
 * `cordapp-one-lib`: A library that only `cordapp-one` depends on, to test that its classes are not visible to other 
   CorDapps
 
-# Steps to run the tests:
+# Running the tests
+
+## TestClient.kt tests
+
+The majority of the tests are in `TestClient.kt`. These can be run as follows:
 
 * Install the latest snapshot of Corda by cloning the Corda 5 repo and calling `./gradlew publishToMavenLocal`
 
@@ -38,4 +42,17 @@ There are also two library modules:
   * Some tests are commented out because they cause the node to crash as part of normal execution. These can be 
     re-enabled to test specific behaviour
 
-// TODO: ALSO DOCUMENT THE IMPLICIT TESTS (E.G. THE ADDITIONAL DEPENDENCIES)
+## Bad CorDapp tests
+
+Re-enabling individual bad CorDapps in the `deployNodes` task (where they are currently commented out) allows you to 
+test specific behaviours.
+
+## Implicit tests
+
+There are also some implicit tests, which "execute" just by turning on the node:
+
+* CorDapp One contains a set of popular dependencies that are accessed in `DependencyImports.kt`. This allows us to 
+  test that these popular dependencies do not clash with Corda's own packages
+* CorDapp One and CorDapp Two both contain a non-flow class with the same fully-qualified name, 
+  `net.corda.joel.duplicate.DuplicateNonFlowClass`. This allows us to test that two non-flow classes with the same 
+  name can exist in two different CorDapps
