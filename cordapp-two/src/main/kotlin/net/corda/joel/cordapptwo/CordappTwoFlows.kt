@@ -7,7 +7,8 @@ import net.corda.v5.application.flows.InitiatingFlow
 import net.corda.v5.application.flows.StartableByRPC
 import net.corda.v5.application.flows.flowservices.dependencies.CordaInject
 import net.corda.v5.base.annotations.Suspendable
-import net.corda.v5.ledger.services.NotaryAwareNetworkMapCache
+import net.corda.v5.ledger.services.NotaryLookupService
+//import net.corda.v5.ledger.services.NotaryAwareNetworkMapCache
 import net.corda.v5.legacyapi.flows.FlowLogic
 import net.joel.sharedlib.ClassWithModifiableStatic
 import org.osgi.framework.FrameworkUtil
@@ -55,15 +56,16 @@ class CheckCannotSeeServiceInOtherCpkLibrary : FlowLogic<Unit>() {
     }
 }
 
+// TODO: I don't actually include any library classes here.
 @InitiatingFlow
 @StartableByRPC
 class CheckCanBuildTxFromMultipleFlowsAndTheirLibs : FlowLogic<Unit>() {
     @CordaInject
-    lateinit var networkMapCache: NotaryAwareNetworkMapCache
+    lateinit var networkLookupService: NotaryLookupService
 
     @Suspendable
     override fun call() {
-        val notary = networkMapCache.notaryIdentities.first()
+        val notary = networkLookupService.notaryIdentities.first()
         val txBuilder = transactionBuilderFactory.create().setNotary(notary)
             .addOutputState(DummyCordappTwoState(), DummyCordappOneContract::class.java.name)
             .addCommand(DummyCordappTwoCommand(), ourIdentity.owningKey)

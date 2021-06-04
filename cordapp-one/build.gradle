@@ -18,12 +18,11 @@ dependencies {
     // ensure that the platform non-core bundles are sandboxed correctly.
     implementation group: 'com.google.guava', name: 'failureaccess', version: '1.0.1'
 
-    // We also include some popular library dependencies, to check these can be loaded as libraries without issue.
-    // We don't include any non-OSGi dependencies, which can't be loaded.
+    // We also include some popular library dependencies, just to check that these can be loaded as libraries without
+    // issue. We don't include any non-OSGi dependencies, which can't be loaded.
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.3'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.12.3'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'com.google.code.gson:gson:2.8.7'
     implementation 'com.google.guava:guava:30.1.1-jre'
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.2'

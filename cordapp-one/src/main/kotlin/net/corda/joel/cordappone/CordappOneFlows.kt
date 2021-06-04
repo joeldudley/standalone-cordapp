@@ -35,12 +35,8 @@ class CheckCannotSeeBundlesInNonCoreSandbox : FlowLogic<Unit>() {
     @Suspendable
     override fun call() {
         val bundleContext = FrameworkUtil.getBundle(this::class.java).bundleContext
-        val bundle = bundleContext
-            .bundles
-            .find { bundle -> bundle.symbolicName == "org.objenesis" }
-
-        bundleContext.bundles.forEach {
-            it.stop()
+        val bundle = bundleContext.bundles.find {
+                bundle -> bundle.symbolicName == "org.objenesis"
         }
 
         if (bundle != null) throw IllegalStateException("CorDapp could find non-core bundle.")

@@ -15,7 +15,6 @@ fun main(args: Array<String>) {
     testClient.close()
 }
 
-// TODO - Add test of building and serialising a transaction containing elements from both CorDapps and their libraries.
 // TODO - Move out of dev mode.
 
 class TestClient {
@@ -31,13 +30,11 @@ class TestClient {
         testStaticIsolation()
         testBundleVisibility()
         testServiceVisibility()
-        // TODO: Broken.
+        // TODO: Currently broken.
         // testCombinedTransactions()
 
-        // Enabling this causes node to exit as part of a test.
+        // Enabling these tests causes node to exit as part of a test.
         // testRestoreFromCheckpoint()
-
-        // Enabling this causes node to exit as part of a test.
         // testRebuildingOfCpkCache()
     }
 

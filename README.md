@@ -1,6 +1,6 @@
 This project contains a set of CorDapps designed to test the Corda node running on OSGi.
 
-#Contents
+# Contents
 
 There are four CorDapps:
 
@@ -18,7 +18,7 @@ There are also two library modules:
 * `cordapp-one-lib`: A library that only `cordapp-one` depends on, to test that its classes are not visible to other 
   CorDapps
 
-#Steps to run the tests:
+# Steps to run the tests:
 
 * Install the latest snapshot of Corda by cloning the Corda 5 repo and calling `./gradlew publishToMavenLocal`
 
@@ -33,3 +33,5 @@ There are also two library modules:
   
   * Some tests are commented out because they cause the node to crash as part of normal execution. These can be 
     re-enabled to test specific behaviour
+
+// TODO: ALSO DOCUMENT THE IMPLICIT TESTS (E.G. THE ADDITIONAL DEPENDENCIES)

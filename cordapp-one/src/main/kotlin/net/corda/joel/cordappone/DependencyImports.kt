@@ -3,12 +3,11 @@ package net.corda.joel.cordappone
 /** This function accesses packages from various popular dependencies to force the main CPK bundle to import them. */
 @Suppress("unused")
 fun forceDependencyImports() {
-    println(com.google.common.util.concurrent.internal.InternalFutureFailureAccess::class.java)
-
     println(com.fasterxml.jackson.annotation.JacksonAnnotation::class.java)
     println(com.fasterxml.jackson.core.Version::class.java)
     println(com.fasterxml.jackson.databind.AbstractTypeResolver::class.java)
     println(com.google.common.annotations.Beta::class.java)
+    println(com.google.common.util.concurrent.internal.InternalFutureFailureAccess::class.java)
     println(com.google.gson.JsonDeserializer::class.java)
     println(com.mysql.cj.CacheAdapterFactory::class.java)
     println(javax.annotation.CheckForNull::class.java)
