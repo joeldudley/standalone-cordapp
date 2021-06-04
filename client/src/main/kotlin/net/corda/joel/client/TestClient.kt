@@ -5,7 +5,7 @@ import net.corda.joel.cordappone.flows.*
 import net.corda.joel.cordappone.flows.utility.KillNode
 import net.corda.joel.cordappone.flows.utility.RegisterCordappService
 import net.corda.joel.cordappone.flows.utility.RegisterLibraryService
-import net.corda.joel.cordappone.flows.utility.SetIsolatedLibStatic
+import net.corda.joel.cordappone.flows.utility.SetSharedLibStatic
 import net.corda.joel.cordapptwo.flows.*
 import net.corda.v5.application.flows.Flow
 import net.corda.v5.base.util.NetworkHostAndPort.Companion.parse
@@ -47,8 +47,8 @@ class TestClient {
      * copy.
      */
     private fun testStaticIsolation() {
-        runFlowSync(SetIsolatedLibStatic::class.java, 99)
-        runFlowSync(CheckIsolatedLibsFlow::class.java)
+        runFlowSync(SetSharedLibStatic::class.java, 99)
+        runFlowSync(CheckLibsAreIsolated::class.java)
     }
 
     private fun testBundleVisibility() {
