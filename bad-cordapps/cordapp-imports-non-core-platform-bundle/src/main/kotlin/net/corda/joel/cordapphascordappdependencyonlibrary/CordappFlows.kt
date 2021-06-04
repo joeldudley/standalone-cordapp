@@ -1,4 +1,4 @@
-package net.corda.joel.cordappimportsnoncorebundle
+package net.corda.joel.cordapphascordappdependencyonlibrary
 
 import net.corda.sandbox.Sandbox
 
