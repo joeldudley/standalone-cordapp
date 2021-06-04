@@ -31,13 +31,13 @@ class TestClient {
     private val cordaRpcOpsProxy = cordaRpcOpsConnection.proxy
 
     fun test() {
-        testStaticIsolation()
+        testStaticsIsolation()
         testBundleVisibility()
         testServiceVisibility()
         testTransactions()
 
         // Enabling these tests causes node to exit. Only one should be enabled at a time.
-        // testRestoreFromCheckpoint()
+        // testRestartFromCheckpoint()
         // testRebuildingOfCpkCache()
     }
 
@@ -46,7 +46,7 @@ class TestClient {
      * modifying a static in CorDapp One's copy of the shared class does not affect the same static in CorDapp Two's
      * copy.
      */
-    private fun testStaticIsolation() {
+    private fun testStaticsIsolation() {
         runFlowSync(SetSharedLibStatic::class.java, 99)
         runFlowSync(CheckLibsAreIsolated::class.java)
     }
@@ -85,7 +85,6 @@ class TestClient {
         runFlowSync(CheckCannotSeeServiceInOtherCpkLibrary::class.java)
     }
 
-    @Suppress("unused")
     private fun testTransactions() {
         runFlowSync(CheckCanCommitTx::class.java)
         // TODO: Currently broken.
@@ -93,7 +92,7 @@ class TestClient {
     }
 
     @Suppress("unused")
-    private fun testRestoreFromCheckpoint() {
+    private fun testRestartFromCheckpoint() {
         // We set the node to exit when running the flow.
         val setToFail = true
         runFlowSync(CheckCanRestartFromCheckpoint::class.java, setToFail)
