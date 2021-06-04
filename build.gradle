@@ -62,6 +62,7 @@ dependencies {
     cordapp project(":bad-cordapps:cordapp-has-cordapp-dependency-on-library")
     cordapp project(":bad-cordapps:cordapp-imports-non-core-platform-bundle")
     cordapp project(":bad-cordapps:cordapp-has-same-bundle-symbolic-name")
+    cordapp project(":bad-cordapps:cordapp-has-same-contract")
     cordapp project(":bad-cordapps:cordapp-has-same-flow")
 }
 
@@ -84,6 +85,7 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         // cordapp project(":bad-cordapps:cordapp-has-cordapp-dependency-on-library")
         // cordapp project(":bad-cordapps:cordapp-imports-non-core-platform-bundle")
         // cordapp project(":bad-cordapps:cordapp-has-same-bundle-symbolic-name")
+        // cordapp project(":bad-cordapps:cordapp-has-same-contract")
         // cordapp project(":bad-cordapps:cordapp-has-same-flow")
     }
     node {

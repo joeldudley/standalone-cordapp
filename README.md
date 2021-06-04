@@ -12,6 +12,8 @@ There are four CorDapps:
   non-core Corda platform bundle
 * `bad-cordapps:cordapp-has-same-bundle-symbolic-name`: This CorDapp should fail to load as it shares a symbolic name 
   with CorDapp One
+* `bad-cordapps:cordapp-has-same-contract`: This CorDapp should fail to load as it shares a fully-qualified contract 
+  name with CorDapp One
 * `bad-cordapps:cordapp-has-same-flow`: This CorDapp should fail to load as it shares a fully-qualified flow name with 
   CorDapp One
 
@@ -37,6 +39,8 @@ The majority of the tests are in `TestClient.kt`. These can be run as follows:
   * The installation of the `bad-cordapps:*` is commented out because they cause the node to crash. These can be 
     re-enabled to test that they cause the node to fail at start-up
   
+* Update the `CPKS_DIRECTORY` constant in `TestClient.kt` to point to the node's CPK directory on your system
+
 * Run the automated tests by running `./gradlew client:run`
   
   * Some tests are commented out because they cause the node to crash as part of normal execution. These can be 
