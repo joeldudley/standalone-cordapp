@@ -14,7 +14,7 @@ import net.corda.v5.legacyapi.flows.FlowLogic
 // TODO: I don't actually include any library classes here.
 @InitiatingFlow
 @StartableByRPC
-class CheckCanBuildTxFromMultipleFlowsAndTheirLibs : FlowLogic<Unit>() {
+class CheckCanBuildTxFromMultipleCordappsAndTheirLibs : FlowLogic<Unit>() {
     @CordaInject
     lateinit var networkLookupService: NotaryLookupService
 

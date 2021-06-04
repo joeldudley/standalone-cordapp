@@ -34,8 +34,7 @@ class TestClient {
         testStaticIsolation()
         testBundleVisibility()
         testServiceVisibility()
-        // TODO: Currently broken.
-        // testCombinedTransactions()
+        testTransactions()
 
         // Enabling these tests causes node to exit. Only one should be enabled at a time.
         // testRestoreFromCheckpoint()
@@ -87,8 +86,10 @@ class TestClient {
     }
 
     @Suppress("unused")
-    private fun testCombinedTransactions() {
-        runFlowSync(CheckCanBuildTxFromMultipleFlowsAndTheirLibs::class.java)
+    private fun testTransactions() {
+        runFlowSync(CheckCanCommitTx::class.java)
+        // TODO: Currently broken.
+        // runFlowSync(CheckCanBuildTxFromMultipleCordappsAndTheirLibs::class.java)
     }
 
     @Suppress("unused")
