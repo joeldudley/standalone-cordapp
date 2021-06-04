@@ -12,6 +12,8 @@ There are four CorDapps:
   non-core Corda platform bundle
 * `bad-cordapps:cordapp-has-same-bundle-symbolic-name`: This CorDapp should fail to load as it shares a symbolic name 
   with CorDapp One
+* `bad-cordapps:cordapp-has-same-flow`: This CorDapp should fail to load as it shares a fully-qualified flow name with 
+  CorDapp One
 
 There are also two library modules:
 
