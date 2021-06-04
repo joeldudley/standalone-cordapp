@@ -11,7 +11,7 @@ import net.corda.v5.application.flows.Flow
 import net.corda.v5.base.util.NetworkHostAndPort.Companion.parse
 import java.io.File
 
-private const val CPKS_DIRECTORY = "/Users/joeldudley/Desktop/cordapp-template-kotlin/build/nodes/NotaryNode/cpks"
+private const val CPKS_DIRECTORY = "./build/nodes/NotaryNode/cpks"
 
 fun main(args: Array<String>) {
     val testClient = TestClient()
@@ -86,10 +86,12 @@ class TestClient {
         runFlowSync(CheckCannotSeeServiceInOtherCpkLibrary::class.java)
     }
 
+    @Suppress("unused")
     private fun testCombinedTransactions() {
         runFlowSync(CheckCanBuildTxFromMultipleFlowsAndTheirLibs::class.java)
     }
 
+    @Suppress("unused")
     private fun testRestoreFromCheckpoint() {
         // We set the node to exit when running the flow.
         val setToFail = true
@@ -99,13 +101,14 @@ class TestClient {
         // The node will crash. Once restarted, it should automatically complete the flow.
     }
 
+    @Suppress("unused")
     private fun testRebuildingOfCpkCache() {
         // We set the node to exit when running the flow.
         val setToFail = true
         runFlowSync(KillNode::class.java, setToFail)
         runFlowAsync(KillNode::class.java)
 
-        // The node will crash. Once restarted (after its CPK directory is deleted, below), it should start
+        // The node will crash. Once restarted (after deleting its CPK directory, below), it should start
         // successfully.
 
         val cpksDirectory = File(CPKS_DIRECTORY)

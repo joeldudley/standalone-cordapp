@@ -38,8 +38,6 @@ The majority of the tests are in `TestClient.kt`. These can be run as follows:
 
   * The installation of the `bad-cordapps:*` is commented out because they cause the node to crash. These can be 
     re-enabled to test that they cause the node to fail at start-up
-  
-* Update the `CPKS_DIRECTORY` constant in `TestClient.kt` to point to the node's CPK directory on your system
 
 * Run the automated tests by running `./gradlew client:run`
   
