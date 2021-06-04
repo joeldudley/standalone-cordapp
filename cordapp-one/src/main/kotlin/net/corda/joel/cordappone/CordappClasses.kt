@@ -1,6 +1,5 @@
 package net.corda.joel.cordappone
 
-import net.corda.joel.cordapponelib.LibraryClass
 import net.corda.v5.application.identity.Party
 import net.corda.v5.application.utilities.JsonRepresentable
 import net.corda.v5.ledger.contracts.BelongsToContract
@@ -8,9 +7,6 @@ import net.corda.v5.ledger.contracts.Contract
 import net.corda.v5.ledger.contracts.ContractState
 import net.corda.v5.ledger.contracts.TypeOnlyCommandData
 import net.corda.v5.ledger.transactions.LedgerTransaction
-
-// Since we serialize these classes as part of flows, we get additional smoke-testing for free by making them as
-// complicated as possible. This explains any unnecessary fields, interfaces, etc.
 
 class DummyCordappOneContract : Contract {
     override fun verify(tx: LedgerTransaction) {}
@@ -22,12 +18,11 @@ class DummyCordappOneState(
 ) : ContractState, JsonRepresentable {
 
     // TODO - Including a library class in a transaction doesn't work currently.
+    // We embed a library class to check whether library classes can be (de)serialized.
     // @Suppress("unused")
-    // val libraryClass = LibraryClass() // We embed a library class for smoke-testing purposes.
+    // val libraryClass = LibraryClass()
 
-    override fun toJsonString(): String {
-        return """{ "participants": "${participants.joinToString(",")}" }"""
-    }
+    override fun toJsonString() = ""
 }
 
 class DummyCordappOneCommand : TypeOnlyCommandData()

@@ -33,7 +33,7 @@ class CheckCanCommitTx : FlowLogic<Unit>() {
         txBuilder.verify()
         val stx = txBuilder.sign()
 
-        sleep(Duration.ZERO) // We force a checkpoint for smoke-testing purposes.
+        sleep(Duration.ZERO) // We force a checkpoint to ensure the transaction is (de)serializable.
 
         flowEngine.subFlow(FinalityFlow(stx, listOf()))
     }
