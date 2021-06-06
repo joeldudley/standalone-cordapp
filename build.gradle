@@ -2,7 +2,7 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
-        maven { url 'https://software.r3.com/artifactory/corda-releases' }
+        maven { url "https://software.r3.com/artifactory/corda-releases" }
         maven { url = "https://software.r3.com/artifactory/corda-dev" }
     }
 
@@ -15,11 +15,12 @@ buildscript {
 }
 
 plugins {
-    id 'net.corda.cordapp.cordapp-configuration'
+    id "net.corda.cordapp.cordapp-configuration"
 }
 
 allprojects {
-    apply plugin: 'kotlin'
+    apply plugin: "kotlin"
+    apply plugin: "net.corda.plugins.quasar-utils"
 
     repositories {
         mavenLocal()
@@ -37,7 +38,7 @@ allprojects {
     }
 }
 
-apply plugin: 'net.corda.plugins.cordformation'
+apply plugin: "net.corda.plugins.cordformation"
 
 dependencies {
     implementation "$cordaReleaseGroup:corda:$cordaVersion"
@@ -52,8 +53,8 @@ dependencies {
     cordapp project(":bad-cordapps:cordapp-has-same-flow")
 }
 
-task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
-    nodeDefaults{
+task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ["jar"]) {
+    nodeDefaults {
         projectCordapp {
             deploy = false
         }
@@ -68,30 +69,28 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
     }
     node {
         name "O=Notary Node,L=Zurich,C=CH"
-        notary = [validating      : false,
-                  serviceLegalName: "O=Notary Service,L=Zurich,C=CH"
-        ]
+        notary = [validating: false, serviceLegalName: "O=Notary Service,L=Zurich,C=CH"]
         p2pPort 10002
         rpcSettings {
             address "localhost:10003"
             adminAddress "localhost:10004"
         }
         h2Port 10005
-        rpcUsers = [[ user: "user", "password": "test", "permissions": ["ALL"]]]
+        rpcUsers = [[user: "user", "password": "test", "permissions": ["ALL"]]]
         // extraConfig = [
-                // Exposes an HTTP interface to the node.
-                // 'httpRpcSettings.address': "localhost:8888",
-                // 'httpRpcSettings.context.basePath': "/api",
-                // 'httpRpcSettings.context.description': "Exposing RPCOps interfaces as webservices",
-                // 'httpRpcSettings.context.title': "HTTP RPC demo",
-                // 'httpRpcSettings.context.version': "1",
-                // Runs against Postgres.
-                //  'dataSourceProperties.dataSourceClassName':'org.postgresql.ds.PGSimpleDataSource',
-                //  'dataSourceProperties.dataSource.url':'jdbc:postgresql://localhost:5432/postgres',
-                //  'dataSourceProperties.dataSource.password' : 'my_password',
-                //  'dataSourceProperties.dataSource.user' : 'party_a'
+        // Exposes an HTTP interface to the node.
+        // "httpRpcSettings.address": "localhost:8888",
+        // "httpRpcSettings.context.basePath": "/api",
+        // "httpRpcSettings.context.description": "Exposing RPCOps interfaces as webservices",
+        // "httpRpcSettings.context.title": "HTTP RPC demo",
+        // "httpRpcSettings.context.version": "1",
+        // Runs against Postgres.
+        //  "dataSourceProperties.dataSourceClassName":"org.postgresql.ds.PGSimpleDataSource",
+        //  "dataSourceProperties.dataSource.url":"jdbc:postgresql://localhost:5432/postgres",
+        //  "dataSourceProperties.dataSource.password" : "my_password",
+        //  "dataSourceProperties.dataSource.user" : "party_a"
         // ]
-        // drivers = ['/Users/joeldudley/Desktop/postgres_node/postgresql-42.1.4.jar']
+        // drivers = ["/Users/joeldudley/Desktop/postgres_node/postgresql-42.1.4.jar"]
     }
     // A second node, if needed.
 //      node {

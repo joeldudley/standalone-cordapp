@@ -1,6 +1,5 @@
 plugins {
-    id 'net.corda.plugins.cordapp-cpk'
-    id 'net.corda.plugins.quasar-utils'
+    id "net.corda.plugins.cordapp-cpk"
 }
 
 dependencies {
@@ -9,7 +8,7 @@ dependencies {
     cordaProvided "$cordaReleaseGroup:corda-legacy-api:$defaultLibraryVersion"
     cordaProvided "$cordaReleaseGroup:corda-serialization:$defaultLibraryVersion"
 
-    cordapp project(':shared-lib')
+    cordapp project(":shared-lib")
 }
 
 cordapp {

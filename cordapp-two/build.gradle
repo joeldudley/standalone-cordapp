@@ -1,6 +1,5 @@
 plugins {
-    id 'net.corda.plugins.cordapp-cpk'
-    id 'net.corda.plugins.quasar-utils'
+    id "net.corda.plugins.cordapp-cpk"
 }
 
 dependencies {
@@ -12,8 +11,8 @@ dependencies {
 
     implementation "org.osgi:osgi.core:$osgiVersion"
 
-    implementation project(':shared-lib')
-    cordapp project(':cordapp-one')
+    implementation project(":shared-lib")
+    cordapp project(":cordapp-one")
 }
 
 cordapp {

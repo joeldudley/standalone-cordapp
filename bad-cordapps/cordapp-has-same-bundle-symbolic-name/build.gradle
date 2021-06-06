@@ -1,6 +1,5 @@
 plugins {
-    id 'net.corda.plugins.cordapp-cpk'
-    id 'net.corda.plugins.quasar-utils'
+    id "net.corda.plugins.cordapp-cpk"
 }
 
 cordapp {
@@ -12,7 +11,7 @@ cordapp {
     }
 }
 
-tasks.named('jar', Jar) {
+tasks.named("jar", Jar) {
     bnd """\
 Bundle-SymbolicName: \${project.group}.cordapp-one
 """
