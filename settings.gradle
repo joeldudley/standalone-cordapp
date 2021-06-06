@@ -1,3 +1,13 @@
+pluginManagement {
+    plugins {
+        id 'net.corda.cordapp.cordapp-configuration' version cordaVersion
+    }
+
+    repositories {
+        mavenLocal()
+    }
+}
+
 include 'cordapp-one'
 include 'cordapp-two'
 include 'shared-lib'

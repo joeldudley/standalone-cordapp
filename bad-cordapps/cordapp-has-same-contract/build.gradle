@@ -4,13 +4,13 @@ plugins {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-osgi-bundle:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-osgi-bundle:$kotlinVersion"
 
-    cordaProvided "$corda_release_group:corda-ledger:$default_library_version"
+    cordaProvided "$cordaReleaseGroup:corda-ledger:$defaultLibraryVersion"
 }
 
 cordapp {
-    targetPlatformVersion corda_platform_version
+    targetPlatformVersion platformVersion.toInteger()
     minimumPlatformVersion 1
     workflow {
         name "Template Flows"

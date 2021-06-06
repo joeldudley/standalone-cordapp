@@ -4,11 +4,11 @@ plugins {
 }
 
 dependencies {
-    cordaProvided "$corda_release_group:corda-sandbox:$default_library_version"
+    cordaProvided "$cordaReleaseGroup:corda-sandbox:$defaultLibraryVersion"
 }
 
 cordapp {
-    targetPlatformVersion corda_platform_version
+    targetPlatformVersion platformVersion.toInteger()
     minimumPlatformVersion 1
     workflow {
         name "Template Flows"

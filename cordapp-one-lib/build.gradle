@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-    compileOnly "org.osgi:osgi.annotation:$osgi_version"
+    compileOnly "org.osgi:osgi.annotation:$osgiVersion"
 }
