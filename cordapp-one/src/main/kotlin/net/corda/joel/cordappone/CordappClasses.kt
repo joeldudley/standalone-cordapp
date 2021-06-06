@@ -10,9 +10,7 @@ import net.corda.v5.ledger.contracts.Contract
 import net.corda.v5.ledger.contracts.ContractState
 import net.corda.v5.ledger.contracts.TypeOnlyCommandData
 import net.corda.v5.ledger.transactions.LedgerTransaction
-import org.osgi.framework.BundleEvent
 import org.osgi.framework.FrameworkUtil
-import java.util.*
 
 class DummyCordappOneContract : Contract {
     override fun verify(tx: LedgerTransaction) {}

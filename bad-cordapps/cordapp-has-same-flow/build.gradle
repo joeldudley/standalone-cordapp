@@ -4,7 +4,6 @@ plugins {
 
 dependencies {
     cordaProvided "$cordaReleaseGroup:corda-application:$defaultLibraryVersion"
-    cordaProvided "$cordaReleaseGroup:corda-legacy-api:$defaultLibraryVersion"
 }
 
 cordapp {

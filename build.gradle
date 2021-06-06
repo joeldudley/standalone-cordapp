@@ -2,8 +2,7 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
-        maven { url "https://software.r3.com/artifactory/corda-releases" }
-        maven { url = "https://software.r3.com/artifactory/corda-dev" }
+        maven { url "https://software.r3.com/artifactory/corda-dev" }
     }
 
     dependencies {
@@ -93,13 +92,13 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ["jar"]) {
         // drivers = ["/Users/joeldudley/Desktop/postgres_node/postgresql-42.1.4.jar"]
     }
     // A second node, if needed.
-//      node {
-//        name "O=Bloatary Node,L=Zurich,C=CH"
-//        p2pPort 10005
-//        rpcSettings {
-//            address "localhost:10006"
-//            adminAddress "localhost:10007"
-//        }
-//        rpcUsers = [[ user: "user", "password": "test", "permissions": ["ALL"]]]
-//    }
+    // node {
+    //     name "O=Bloatary Node,L=Zurich,C=CH"
+    //     p2pPort 10005
+    //     rpcSettings {
+    //         address "localhost:10006"
+    //         adminAddress "localhost:10007"
+    //     }
+    //     rpcUsers = [[ user: "user", "password": "test", "permissions": ["ALL"]]]
+    // }
 }

@@ -19,8 +19,6 @@ fun main(args: Array<String>) {
     testClient.close()
 }
 
-// TODO - Move out of dev mode.
-
 class TestClient {
     private val address = parse("localhost:10003")
     private val username = "user"
