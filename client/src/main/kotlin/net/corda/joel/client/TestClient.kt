@@ -3,23 +3,23 @@ package net.corda.joel.client
 import net.corda.client.rpc.CordaRPCClient
 import net.corda.joel.cordappone.flows.CanCommitTx
 import net.corda.joel.cordappone.flows.CanRestartFromCheckpoint
+import net.corda.joel.cordappone.flows.LibsAreIsolated
 import net.corda.joel.cordappone.flows.bundlevisibility.*
 import net.corda.joel.cordappone.flows.serviceeventvisibility.CanSeeServiceEventsInOwnCordappBundle
 import net.corda.joel.cordappone.flows.serviceeventvisibility.CanSeeServiceEventsInOwnLibrary
 import net.corda.joel.cordappone.flows.servicevisibility.CanSeeServiceInOwnCordappBundle
 import net.corda.joel.cordappone.flows.servicevisibility.CanSeeServiceInOwnLibrary
 import net.corda.joel.cordappone.flows.servicevisibility.CannotSeeServiceInNonCoreSandbox
+import net.corda.joel.cordappone.flows.utility.GenerateBundleEvents
 import net.corda.joel.cordappone.flows.utility.KillNode
 import net.corda.joel.cordappone.flows.utility.RegisterCordappService
 import net.corda.joel.cordappone.flows.utility.RegisterLibraryService
-import net.corda.joel.cordappone.flows.utility.SetSharedLibStatic
-import net.corda.joel.cordapptwo.flows.LibsAreIsolated
-import net.corda.joel.cordapptwo.flows.bundlevisibility.CanSeeCordappBundleInOtherCpk
 import net.corda.joel.cordapptwo.flows.bundlevisibility.CannotSeeLibraryBundleInOtherCpk
 import net.corda.joel.cordapptwo.flows.serviceeventvisibility.CanSeeServiceEventsInOtherCpkCordappBundle
 import net.corda.joel.cordapptwo.flows.serviceeventvisibility.CannotSeeServiceEventsInOtherCpkLibrary
 import net.corda.joel.cordapptwo.flows.servicevisibility.CanSeeServiceInOtherCpkCordappBundle
 import net.corda.joel.cordapptwo.flows.servicevisibility.CannotSeeServiceInOtherCpkLibrary
+import net.corda.joel.cordapptwo.flows.utility.SetSharedLibStatic
 import net.corda.v5.application.flows.Flow
 import net.corda.v5.base.util.NetworkHostAndPort.Companion.parse
 import java.io.File
@@ -54,9 +54,9 @@ class TestClient {
 
     /** We check that CorDapps receive separate copies of shared libraries. */
     private fun testStaticsIsolation() {
-        // We set the value of a static in CorDapp One's copy of a shared library.
+        // We set the value of a static in CorDapp Two's copy of a shared library.
         runFlowSync(SetSharedLibStatic::class.java, 99)
-        // We check that the value of the static is unchanged in CorDapp Two's copy of the same library.
+        // We check that the value of the static is unchanged in CorDapp One's copy of the same library.
         runFlowSync(LibsAreIsolated::class.java)
     }
 
@@ -71,6 +71,9 @@ class TestClient {
         runFlowSync(CanSeeCordappBundleInOtherCpk::class.java)
         runFlowSync(CannotSeeLibraryBundleInOtherCpk::class.java)
         runFlowSync(CanSeeLibraryInOwnCpk::class.java)
+
+        // TODO: Check the generated bundle events.
+        runFlowSync(GenerateBundleEvents::class.java)
     }
 
     /**

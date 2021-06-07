@@ -1,8 +1,8 @@
-package net.corda.joel.cordapptwo.flows
+package net.corda.joel.cordappone.flows
 
 import net.corda.joel.cordappone.DummyCordappOneContract
+import net.corda.joel.cordappone.DummyCordappOneState
 import net.corda.joel.cordapptwo.DummyCordappTwoCommand
-import net.corda.joel.cordapptwo.DummyCordappTwoState
 import net.corda.systemflows.FinalityFlow
 import net.corda.v5.application.flows.Flow
 import net.corda.v5.application.flows.InitiatingFlow
@@ -34,7 +34,7 @@ class CanBuildTxFromMultipleCordappsAndTheirLibs : Flow<Unit> {
     override fun call() {
         val notary = networkLookupService.notaryIdentities.first()
         val txBuilder = transactionBuilderFactory.create().setNotary(notary)
-            .addOutputState(DummyCordappTwoState(), DummyCordappOneContract::class.java.name)
+            .addOutputState(DummyCordappOneState(), DummyCordappOneContract::class.java.name)
             .addCommand(DummyCordappTwoCommand(), flowIdentity.ourIdentity.owningKey)
         txBuilder.verify()
         val stx = txBuilder.sign()

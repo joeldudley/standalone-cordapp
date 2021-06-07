@@ -13,6 +13,8 @@ dependencies {
     implementation project(":shared-lib")
     implementation project(":cordapp-one-lib")
 
+    cordapp project(":cordapp-two")
+
     // We include a library that duplicates one of the platform non-core bundles. This serves as a smoke-test to
     // ensure that the platform non-core bundles are sandboxed correctly.
     implementation group: "com.google.guava", name: "failureaccess", version: "1.0.1"

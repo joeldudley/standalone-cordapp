@@ -1,4 +1,4 @@
-package net.corda.joel.cordappone.flows.utility
+package net.corda.joel.cordappone.flows
 
 import net.corda.v5.application.flows.Flow
 import net.corda.v5.application.flows.InitiatingFlow
@@ -6,14 +6,13 @@ import net.corda.v5.application.flows.StartableByRPC
 import net.corda.v5.base.annotations.Suspendable
 import net.joel.sharedlib.ClassWithModifiableStatic
 
-/**
- * Sets a static in a library class shared with CorDapp Two.
- */
 @InitiatingFlow
 @StartableByRPC
-class SetSharedLibStatic(private val value: Int) : Flow<Unit> {
+class LibsAreIsolated : Flow<Unit> {
     @Suspendable
     override fun call() {
-        ClassWithModifiableStatic.modifiableStaticCounter = value
+        if (ClassWithModifiableStatic.modifiableStaticCounter != 0) {
+            throw IllegalStateException("Static did not have the expected value.")
+        }
     }
 }

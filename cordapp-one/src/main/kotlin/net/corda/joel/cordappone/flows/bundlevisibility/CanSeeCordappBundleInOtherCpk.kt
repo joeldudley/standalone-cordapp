@@ -1,6 +1,6 @@
-package net.corda.joel.cordapptwo.flows.bundlevisibility
+package net.corda.joel.cordappone.flows.bundlevisibility
 
-import net.corda.joel.cordappone.flows.utility.SetSharedLibStatic
+import net.corda.joel.cordapptwo.flows.utility.SetSharedLibStatic
 import net.corda.v5.application.flows.Flow
 import net.corda.v5.application.flows.InitiatingFlow
 import net.corda.v5.application.flows.StartableByRPC
