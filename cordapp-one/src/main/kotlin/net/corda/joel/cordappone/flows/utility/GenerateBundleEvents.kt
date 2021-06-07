@@ -8,13 +8,14 @@ import net.corda.v5.base.annotations.Suspendable
 import net.joel.sharedlib.ClassWithModifiableStatic
 import org.osgi.framework.FrameworkUtil
 
-/** Generates bundle events by restarting one of its own library bundles and CorDapp Two's CorDapp bundle. */
+/** Generates bundle events by restarting one of CorDapp One's library bundles and CorDapp Two's CorDapp bundle. */
 @InitiatingFlow
 @StartableByRPC
 class GenerateBundleEvents : Flow<Unit> {
     @Suspendable
     override fun call() {
         val sharedLibraryBundle = FrameworkUtil.getBundle(ClassWithModifiableStatic::class.java)
+
         sharedLibraryBundle.stop()
         sharedLibraryBundle.start()
 

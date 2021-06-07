@@ -4,7 +4,7 @@ import net.corda.v5.application.services.CordaService
 import net.corda.v5.application.services.lifecycle.ServiceLifecycleEvent
 import org.osgi.framework.FrameworkUtil
 
-/** Creates a listener that stores which bundles it has received service events from.  */
+/** Creates a listener that stores which bundles it has received service events and bundle events from. */
 class CordappOneEventRecorderService : CordaService {
     val serviceEventSources = mutableSetOf<String>()
     val bundleEventSources = mutableSetOf<String>()
@@ -20,8 +20,6 @@ class CordappOneEventRecorderService : CordaService {
         bundleContext.addBundleListener { bundleEvent ->
             // We add the bundle's event source bundle to the set of bundle event sources.
             bundleEventSources.add(bundleEvent.origin.symbolicName)
-            println(bundleEvent)
-            println("wejbiobwefoiwefoiib: ${bundleEvent.origin.symbolicName}.")
         }
     }
 }

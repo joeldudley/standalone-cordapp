@@ -8,11 +8,11 @@ import org.osgi.framework.FrameworkUtil
 
 @InitiatingFlow
 @StartableByRPC
-class CanSeeServiceInOwnLibrary : Flow<Unit> {
+class CanSeeServiceInOtherCpkCordappBundle : Flow<Unit> {
     @Suspendable
     override fun call() {
         val bundleContext = FrameworkUtil.getBundle(this::class.java).bundleContext
-        bundleContext.getServiceReference("net.joel.sharedlib.LibraryClassThatRegistersService")
-            ?: throw IllegalStateException("CorDapp could not find service in own library.")
+        bundleContext.getServiceReference("net.corda.joel.cordapptwo.flows.utility.RegisterCordappService")
+            ?: throw IllegalStateException("CorDapp could not find service in other CPK CorDapp bundle.")
     }
 }

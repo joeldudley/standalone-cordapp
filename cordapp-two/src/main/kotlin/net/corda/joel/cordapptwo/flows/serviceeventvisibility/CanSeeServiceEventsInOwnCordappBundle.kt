@@ -1,20 +1,19 @@
-package net.corda.joel.cordappone.flows.serviceeventvisibility
+package net.corda.joel.cordapptwo.flows.serviceeventvisibility
 
-import net.corda.joel.cordappone.CordappOneEventRecorderService
+import net.corda.joel.cordapptwo.CordappTwoEventRecorderService
 import net.corda.v5.application.flows.Flow
 import net.corda.v5.application.flows.InitiatingFlow
 import net.corda.v5.application.flows.StartableByRPC
 import net.corda.v5.application.flows.flowservices.dependencies.CordaInject
-import java.lang.IllegalStateException
 
 @InitiatingFlow
 @StartableByRPC
 class CanSeeServiceEventsInOwnCordappBundle : Flow<Unit> {
     @CordaInject
-    lateinit var cordappEventRecorderService: CordappOneEventRecorderService
+    lateinit var cordappEventRecorderService: CordappTwoEventRecorderService
 
     override fun call() {
-        if (!cordappEventRecorderService.serviceEventSources.contains("com.template.cordapp-one")) {
+        if (!cordappEventRecorderService.serviceEventSources.contains("com.template.cordapp-two")) {
             throw IllegalStateException("A CorDapp bundle could not see service events in its own CorDapp bundle.")
         }
     }
