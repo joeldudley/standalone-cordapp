@@ -7,6 +7,7 @@ import net.corda.v5.base.annotations.Suspendable
 import org.osgi.framework.FrameworkUtil
 import java.util.*
 
+/** Registers a service on the node. */
 @InitiatingFlow
 @StartableByRPC
 class RegisterCordappService : Flow<Unit> {

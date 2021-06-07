@@ -4,6 +4,7 @@ import net.corda.v5.application.services.CordaService
 import net.corda.v5.application.services.lifecycle.ServiceLifecycleEvent
 import org.osgi.framework.FrameworkUtil
 
+/** Creates a listener that stores which bundles it has received service events from.  */
 class CordappTwoEventRecorderService : CordaService {
     val serviceEventSources = mutableSetOf<String>()
 

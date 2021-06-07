@@ -1,16 +1,19 @@
 package net.corda.joel.client
 
 import net.corda.client.rpc.CordaRPCClient
-import net.corda.joel.cordappone.flows.*
+import net.corda.joel.cordappone.flows.CanCommitTx
+import net.corda.joel.cordappone.flows.CanRestartFromCheckpoint
 import net.corda.joel.cordappone.flows.bundlevisibility.*
 import net.corda.joel.cordappone.flows.serviceeventvisibility.CanSeeServiceEventsInOwnCordappBundle
 import net.corda.joel.cordappone.flows.serviceeventvisibility.CanSeeServiceEventsInOwnLibrary
-import net.corda.joel.cordappone.flows.servicevisibility.*
+import net.corda.joel.cordappone.flows.servicevisibility.CanSeeServiceInOwnCordappBundle
+import net.corda.joel.cordappone.flows.servicevisibility.CanSeeServiceInOwnLibrary
+import net.corda.joel.cordappone.flows.servicevisibility.CannotSeeServiceInNonCoreSandbox
 import net.corda.joel.cordappone.flows.utility.KillNode
 import net.corda.joel.cordappone.flows.utility.RegisterCordappService
 import net.corda.joel.cordappone.flows.utility.RegisterLibraryService
 import net.corda.joel.cordappone.flows.utility.SetSharedLibStatic
-import net.corda.joel.cordapptwo.flows.*
+import net.corda.joel.cordapptwo.flows.LibsAreIsolated
 import net.corda.joel.cordapptwo.flows.bundlevisibility.CanSeeCordappBundleInOtherCpk
 import net.corda.joel.cordapptwo.flows.bundlevisibility.CannotSeeLibraryBundleInOtherCpk
 import net.corda.joel.cordapptwo.flows.serviceeventvisibility.CanSeeServiceEventsInOtherCpkCordappBundle
@@ -49,16 +52,15 @@ class TestClient {
         // testRebuildingOfCpkCache()
     }
 
-    /**
-     * CorDapp One and CorDapp two have a shared library, which contains `ClassWithModifiableStatic`. We check that
-     * modifying a static in CorDapp One's copy of the shared class does not affect the same static in CorDapp Two's
-     * copy.
-     */
+    /** We check that CorDapps receive separate copies of shared libraries. */
     private fun testStaticsIsolation() {
+        // We set the value of a static in CorDapp One's copy of a shared library.
         runFlowSync(SetSharedLibStatic::class.java, 99)
+        // We check that the value of the static is unchanged in CorDapp Two's copy of the same library.
         runFlowSync(LibsAreIsolated::class.java)
     }
 
+    /** We check that bundles can only see CorDapp bundles, their own library bundles, and core platform bundles. */
     private fun testBundleVisibility() {
         runFlowSync(CanSeeBundleInCoreSandbox::class.java)
         runFlowSync(CannotSeeBundleInNonCoreSandbox::class.java)
@@ -74,8 +76,8 @@ class TestClient {
     /**
      * We check that CorDapps can only see services registered by CorDapp bundles or their own library bundles.
      *
-     * They should also be able to see services registered by the core platform bundles, but unfortunately we can't
-     * test this, as there aren't any.
+     * They should also be able to see services registered by the core platform bundles, and not see services
+     * registered by non-core platform bundles. Unfortunately, we can't test this, as there aren't any.
      */
     private fun testServiceVisibility() {
         runFlowSync(CannotSeeServiceInNonCoreSandbox::class.java)
@@ -100,12 +102,14 @@ class TestClient {
         runFlowSync(CannotSeeServiceEventsInOtherCpkLibrary::class.java)
     }
 
+    /** We test that transactions containing classes from multiple CorDapp and library bundles can be committed. */
     private fun testTransactions() {
         runFlowSync(CanCommitTx::class.java)
         // TODO: Currently broken.
         // runFlowSync(CanBuildTxFromMultipleCordappsAndTheirLibs::class.java)
     }
 
+    /** We check that a node can restart successfully from a checkpoint. */
     @Suppress("unused")
     private fun testRestartFromCheckpoint() {
         // We set the node to exit when running the flow.
@@ -116,6 +120,7 @@ class TestClient {
         // The node will crash. Once restarted, it should automatically complete the flow.
     }
 
+    /** We check that a node can successfully rebuild its CPK cache if needed. */
     @Suppress("unused")
     private fun testRebuildingOfCpkCache() {
         // We set the node to exit when running the flow.

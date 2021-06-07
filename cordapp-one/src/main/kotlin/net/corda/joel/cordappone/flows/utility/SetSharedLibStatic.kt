@@ -6,6 +6,9 @@ import net.corda.v5.application.flows.StartableByRPC
 import net.corda.v5.base.annotations.Suspendable
 import net.joel.sharedlib.ClassWithModifiableStatic
 
+/**
+ * Sets a static in a library class shared with CorDapp Two.
+ */
 @InitiatingFlow
 @StartableByRPC
 class SetSharedLibStatic(private val value: Int) : Flow<Unit> {
