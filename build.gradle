@@ -40,7 +40,7 @@ allprojects {
 apply plugin: "net.corda.plugins.cordformation"
 
 dependencies {
-    implementation "$cordaReleaseGroup:corda:$cordaVersion"
+    implementation "$cordaReleaseGroup:corda:$corda_release_version"
     implementation "$cordaReleaseGroup:corda-node-api:$defaultLibraryVersion"
 
     cordapp project(":cordapp-one")

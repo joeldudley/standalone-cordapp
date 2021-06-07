@@ -1,6 +1,6 @@
 pluginManagement {
     plugins {
-        id "net.corda.cordapp.cordapp-configuration" version cordaVersion
+        id "net.corda.cordapp.cordapp-configuration" version corda_release_version
     }
 
     repositories {
