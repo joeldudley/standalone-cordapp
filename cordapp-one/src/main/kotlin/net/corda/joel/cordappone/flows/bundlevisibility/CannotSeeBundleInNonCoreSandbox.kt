@@ -1,4 +1,4 @@
-package net.corda.joel.cordapptwo.flows
+package net.corda.joel.cordappone.flows.bundlevisibility
 
 import net.corda.v5.application.flows.Flow
 import net.corda.v5.application.flows.InitiatingFlow
@@ -8,13 +8,14 @@ import org.osgi.framework.FrameworkUtil
 
 @InitiatingFlow
 @StartableByRPC
-class CheckCannotSeeLibraryBundleInOtherCpk : Flow<Unit> {
+class CannotSeeBundleInNonCoreSandbox : Flow<Unit> {
     @Suspendable
     override fun call() {
         val bundleContext = FrameworkUtil.getBundle(this::class.java).bundleContext
-        val bundle = bundleContext
-            .bundles
-            .find { bundle -> bundle.symbolicName == "cordapp-one-lib" }
-        if (bundle != null) throw IllegalStateException("CorDapp could find library bundle in other CPK.")
+        val bundle = bundleContext.bundles.find {
+                bundle -> bundle.symbolicName == "net.corda.node"
+        }
+
+        if (bundle != null) throw IllegalStateException("CorDapp could find non-core bundle.")
     }
 }

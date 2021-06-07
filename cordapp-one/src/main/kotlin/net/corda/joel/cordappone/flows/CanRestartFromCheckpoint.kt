@@ -11,7 +11,7 @@ import kotlin.system.exitProcess
 
 @InitiatingFlow
 @StartableByRPC
-class CheckCanRestartFromCheckpoint(private val setToFail: Boolean = false) : Flow<Unit> {
+class CanRestartFromCheckpoint(private val setToFail: Boolean = false) : Flow<Unit> {
     companion object {
         private var shouldFail = false
     }

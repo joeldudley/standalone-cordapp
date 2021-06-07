@@ -2,11 +2,21 @@ package net.corda.joel.client
 
 import net.corda.client.rpc.CordaRPCClient
 import net.corda.joel.cordappone.flows.*
+import net.corda.joel.cordappone.flows.bundlevisibility.*
+import net.corda.joel.cordappone.flows.serviceeventvisibility.CanSeeServiceEventsInOwnCordappBundle
+import net.corda.joel.cordappone.flows.serviceeventvisibility.CanSeeServiceEventsInOwnLibrary
+import net.corda.joel.cordappone.flows.servicevisibility.*
 import net.corda.joel.cordappone.flows.utility.KillNode
 import net.corda.joel.cordappone.flows.utility.RegisterCordappService
 import net.corda.joel.cordappone.flows.utility.RegisterLibraryService
 import net.corda.joel.cordappone.flows.utility.SetSharedLibStatic
 import net.corda.joel.cordapptwo.flows.*
+import net.corda.joel.cordapptwo.flows.bundlevisibility.CanSeeCordappBundleInOtherCpk
+import net.corda.joel.cordapptwo.flows.bundlevisibility.CannotSeeLibraryBundleInOtherCpk
+import net.corda.joel.cordapptwo.flows.serviceeventvisibility.CanSeeServiceEventsInOtherCpkCordappBundle
+import net.corda.joel.cordapptwo.flows.serviceeventvisibility.CannotSeeServiceEventsInOtherCpkLibrary
+import net.corda.joel.cordapptwo.flows.servicevisibility.CanSeeServiceInOtherCpkCordappBundle
+import net.corda.joel.cordapptwo.flows.servicevisibility.CannotSeeServiceInOtherCpkLibrary
 import net.corda.v5.application.flows.Flow
 import net.corda.v5.base.util.NetworkHostAndPort.Companion.parse
 import java.io.File
@@ -46,19 +56,19 @@ class TestClient {
      */
     private fun testStaticsIsolation() {
         runFlowSync(SetSharedLibStatic::class.java, 99)
-        runFlowSync(CheckLibsAreIsolated::class.java)
+        runFlowSync(LibsAreIsolated::class.java)
     }
 
     private fun testBundleVisibility() {
-        runFlowSync(CheckCanSeeBundlesInCoreSandbox::class.java)
-        runFlowSync(CheckCannotSeeBundlesInNonCoreSandbox::class.java)
+        runFlowSync(CanSeeBundleInCoreSandbox::class.java)
+        runFlowSync(CannotSeeBundleInNonCoreSandbox::class.java)
 
-        runFlowSync(CheckCanLoadClassInCoreSandbox::class.java)
-        runFlowSync(CheckCannotLoadClassInNonCoreSandbox::class.java)
+        runFlowSync(CanLoadClassInCoreSandbox::class.java)
+        runFlowSync(CannotLoadClassInNonCoreSandbox::class.java)
 
-        runFlowSync(CheckCanSeeCordappBundleInOtherCpk::class.java)
-        runFlowSync(CheckCannotSeeLibraryBundleInOtherCpk::class.java)
-        runFlowSync(CheckCanSeeLibraryBundleInOwnCpk::class.java)
+        runFlowSync(CanSeeCordappBundleInOtherCpk::class.java)
+        runFlowSync(CannotSeeLibraryBundleInOtherCpk::class.java)
+        runFlowSync(CanSeeLibraryInOwnCpk::class.java)
     }
 
     /**
@@ -68,34 +78,41 @@ class TestClient {
      * test this, as there aren't any.
      */
     private fun testServiceVisibility() {
-        runFlowSync(CheckCannotSeeServiceInNonCoreSandbox::class.java)
+        runFlowSync(CannotSeeServiceInNonCoreSandbox::class.java)
 
         // We register a service from the CorDapp bundle of CorDapp One. We check the service can be found from the
         // CorDapp bundle of CorDapp One and CorDapp Two.
         runFlowSync(RegisterCordappService::class.java)
-        runFlowSync(CheckCanSeeServiceInOwnCpkCordappBundle::class.java)
-        runFlowSync(CheckCanSeeServiceInOtherCpkCordappBundle::class.java)
+        runFlowSync(CanSeeServiceInOwnCordappBundle::class.java)
+        runFlowSync(CanSeeServiceInOtherCpkCordappBundle::class.java)
 
         // We register a service from a library of CorDapp One. We check the service can be found from a CorDapp
         // bundle of CorDapp One, but not from a CorDapp bundle of CorDapp Two.
         runFlowSync(RegisterLibraryService::class.java)
-        runFlowSync(CheckCanSeeServiceInOwnCpkLibrary::class.java)
-        runFlowSync(CheckCannotSeeServiceInOtherCpkLibrary::class.java)
+        runFlowSync(CanSeeServiceInOwnLibrary::class.java)
+        runFlowSync(CannotSeeServiceInOtherCpkLibrary::class.java)
+
+        // We check that the first service registration was visible to both CorDapps, but the second was only visible
+        // to CorDapp One.
+        runFlowSync(CanSeeServiceEventsInOwnCordappBundle::class.java)
+        runFlowSync(CanSeeServiceEventsInOtherCpkCordappBundle::class.java)
+        runFlowSync(CanSeeServiceEventsInOwnLibrary::class.java)
+        runFlowSync(CannotSeeServiceEventsInOtherCpkLibrary::class.java)
     }
 
     private fun testTransactions() {
-        runFlowSync(CheckCanCommitTx::class.java)
+        runFlowSync(CanCommitTx::class.java)
         // TODO: Currently broken.
-        // runFlowSync(CheckCanBuildTxFromMultipleCordappsAndTheirLibs::class.java)
+        // runFlowSync(CanBuildTxFromMultipleCordappsAndTheirLibs::class.java)
     }
 
     @Suppress("unused")
     private fun testRestartFromCheckpoint() {
         // We set the node to exit when running the flow.
         val setToFail = true
-        runFlowSync(CheckCanRestartFromCheckpoint::class.java, setToFail)
+        runFlowSync(CanRestartFromCheckpoint::class.java, setToFail)
         // We run the flow.
-        runFlowAsync(CheckCanRestartFromCheckpoint::class.java)
+        runFlowAsync(CanRestartFromCheckpoint::class.java)
         // The node will crash. Once restarted, it should automatically complete the flow.
     }
 

@@ -3,6 +3,8 @@ plugins {
 }
 
 dependencies {
+    cordaProvided "$cordaReleaseGroup:corda-application:$defaultLibraryVersion"
+
     implementation "org.osgi:osgi.core:$osgiVersion"
 
     compileOnly "org.osgi:osgi.annotation:$osgiVersion"

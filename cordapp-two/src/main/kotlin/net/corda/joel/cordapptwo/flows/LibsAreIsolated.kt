@@ -8,7 +8,7 @@ import net.joel.sharedlib.ClassWithModifiableStatic
 
 @InitiatingFlow
 @StartableByRPC
-class CheckLibsAreIsolated : Flow<Unit> {
+class LibsAreIsolated : Flow<Unit> {
     @Suspendable
     override fun call() {
         if (ClassWithModifiableStatic.modifiableStaticCounter != 0)

@@ -1,8 +1,8 @@
-package net.corda.joel.cordappone.flows
+package net.corda.joel.cordapptwo.flows
 
-import net.corda.joel.cordappone.DummyCordappOneCommand
 import net.corda.joel.cordappone.DummyCordappOneContract
-import net.corda.joel.cordappone.DummyCordappOneState
+import net.corda.joel.cordapptwo.DummyCordappTwoCommand
+import net.corda.joel.cordapptwo.DummyCordappTwoState
 import net.corda.systemflows.FinalityFlow
 import net.corda.v5.application.flows.Flow
 import net.corda.v5.application.flows.InitiatingFlow
@@ -13,17 +13,11 @@ import net.corda.v5.application.flows.flowservices.dependencies.CordaInject
 import net.corda.v5.base.annotations.Suspendable
 import net.corda.v5.ledger.services.NotaryLookupService
 import net.corda.v5.ledger.transactions.TransactionBuilderFactory
-import java.time.Duration
 
-/**
- * Checks that a transaction built from a single CorDapp can be committed successfully.
- *
- * We get additional smoke-testing for free by making this flow as complicated as possible. This explains any
- * unnecessary variables, operations, etc.
- */
+// TODO: I don't actually include any library classes here.
 @InitiatingFlow
 @StartableByRPC
-class CheckCanCommitTx : Flow<Unit> {
+class CanBuildTxFromMultipleCordappsAndTheirLibs : Flow<Unit> {
     @CordaInject
     lateinit var networkLookupService: NotaryLookupService
 
@@ -31,22 +25,19 @@ class CheckCanCommitTx : Flow<Unit> {
     lateinit var transactionBuilderFactory: TransactionBuilderFactory
 
     @CordaInject
-    lateinit var flowEngine: FlowEngine
+    lateinit var flowIdentity: FlowIdentity
 
     @CordaInject
-    lateinit var flowIdentity: FlowIdentity
+    lateinit var flowEngine: FlowEngine
 
     @Suspendable
     override fun call() {
         val notary = networkLookupService.notaryIdentities.first()
         val txBuilder = transactionBuilderFactory.create().setNotary(notary)
-            .addOutputState(DummyCordappOneState(), DummyCordappOneContract::class.java.name)
-            .addCommand(DummyCordappOneCommand(), flowIdentity.ourIdentity.owningKey)
+            .addOutputState(DummyCordappTwoState(), DummyCordappOneContract::class.java.name)
+            .addCommand(DummyCordappTwoCommand(), flowIdentity.ourIdentity.owningKey)
         txBuilder.verify()
         val stx = txBuilder.sign()
-
-        flowEngine.sleep(Duration.ZERO) // We force a checkpoint to ensure the transaction is (de)serializable.
-
         flowEngine.subFlow(FinalityFlow(stx, listOf()))
     }
 }

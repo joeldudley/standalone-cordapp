@@ -1,4 +1,4 @@
-package net.corda.joel.cordappone.flows
+package net.corda.joel.cordappone.flows.bundlevisibility
 
 import net.corda.v5.application.flows.Flow
 import net.corda.v5.application.flows.InitiatingFlow
@@ -8,11 +8,13 @@ import org.osgi.framework.FrameworkUtil
 
 @InitiatingFlow
 @StartableByRPC
-class CheckCanSeeServiceInOwnCpkLibrary : Flow<Unit> {
+class CanSeeLibraryInOwnCpk : Flow<Unit> {
     @Suspendable
     override fun call() {
         val bundleContext = FrameworkUtil.getBundle(this::class.java).bundleContext
-        bundleContext.getServiceReference("net.joel.sharedlib.LibraryClassThatRegistersService")
-            ?: throw IllegalStateException("CorDapp could not find service in own library.")
+        bundleContext
+            .bundles
+            .find { bundle -> bundle.symbolicName == "cordapp-one-lib" }
+            ?: throw IllegalStateException("CorDapp could not find library bundle in own CPK.")
     }
 }

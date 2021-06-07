@@ -2,6 +2,7 @@ dependencies {
     implementation "$cordaReleaseGroup:corda-client-extensions-rpc:$defaultLibraryVersion"
     implementation "$cordaReleaseGroup:corda-client-rpc:$defaultLibraryVersion"
     implementation "$cordaReleaseGroup:corda-ledger:$defaultLibraryVersion"
+    implementation "$cordaReleaseGroup:corda-legacy-api:$defaultLibraryVersion"
 
     implementation project(":cordapp-one")
     implementation project(":cordapp-two")

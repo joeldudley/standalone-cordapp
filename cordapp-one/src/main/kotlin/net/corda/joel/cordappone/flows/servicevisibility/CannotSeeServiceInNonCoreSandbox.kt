@@ -1,4 +1,4 @@
-package net.corda.joel.cordappone.flows
+package net.corda.joel.cordappone.flows.servicevisibility
 
 import net.corda.v5.application.flows.Flow
 import net.corda.v5.application.flows.InitiatingFlow
@@ -8,11 +8,11 @@ import org.osgi.framework.FrameworkUtil
 
 @InitiatingFlow
 @StartableByRPC
-class CheckCanSeeBundlesInCoreSandbox : Flow<Unit> {
+class CannotSeeServiceInNonCoreSandbox : Flow<Unit> {
     @Suspendable
     override fun call() {
         val bundleContext = FrameworkUtil.getBundle(this::class.java).bundleContext
-        bundleContext.bundles.find { bundle -> bundle.symbolicName == "org.apache.felix.framework" }
-            ?: throw IllegalStateException("CorDapp could not find core bundle.")
+        val service = bundleContext.getServiceReference("net.corda.sandbox.SandboxService")
+        if (service != null) throw IllegalStateException("CorDapp could find non-core service.")
     }
 }

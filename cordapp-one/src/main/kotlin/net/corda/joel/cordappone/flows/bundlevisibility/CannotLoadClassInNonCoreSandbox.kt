@@ -1,4 +1,4 @@
-package net.corda.joel.cordappone.flows
+package net.corda.joel.cordappone.flows.bundlevisibility
 
 import net.corda.v5.application.flows.Flow
 import net.corda.v5.application.flows.InitiatingFlow
@@ -8,7 +8,7 @@ import org.osgi.framework.FrameworkUtil
 
 @InitiatingFlow
 @StartableByRPC
-class CheckCannotLoadClassInNonCoreSandbox : Flow<Unit> {
+class CannotLoadClassInNonCoreSandbox : Flow<Unit> {
     @Suspendable
     override fun call() {
         val bundleContext = FrameworkUtil.getBundle(this::class.java)
@@ -19,7 +19,7 @@ class CheckCannotLoadClassInNonCoreSandbox : Flow<Unit> {
             return
         }
 
-        throw IllegalStateException("A `ClassNotFoundException` was not thrown when attempting to loaded a class in a " +
-                "non-core sandbox")
+        throw IllegalStateException("A `ClassNotFoundException` was not thrown when attempting to loaded a class in " +
+                "a non-core sandbox.")
     }
 }
