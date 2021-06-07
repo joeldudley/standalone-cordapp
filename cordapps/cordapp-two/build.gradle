@@ -4,10 +4,13 @@ plugins {
 
 dependencies {
     cordaProvided "$cordaReleaseGroup:corda-application:$defaultLibraryVersion"
+    cordaProvided "$cordaReleaseGroup:corda-flows:$defaultLibraryVersion"
     cordaProvided "$cordaReleaseGroup:corda-ledger:$defaultLibraryVersion"
     cordaProvided "$cordaReleaseGroup:corda-serialization:$defaultLibraryVersion"
 
-    cordapp project(":libs:shared-lib")
+    implementation "org.osgi:osgi.core:$osgiVersion"
+
+    implementation project(":libs:shared-lib")
 }
 
 cordapp {

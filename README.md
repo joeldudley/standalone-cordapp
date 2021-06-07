@@ -4,9 +4,10 @@ This project contains a set of CorDapps designed to test the Corda node running 
 
 There are four CorDapps:
 
-* `cordapp-one` and `cordapp-two`: These contain various flows and other classes that are useful in testing the 
-  correct functioning of an OSGi Corda node
-* `cordapp-to-be-stopped-and-starting`: This CorDapp is stopped and started during testing to generate bundle events
+* `cordapps:cordapp-one` and `cordapps:cordapp-two`: These contain various flows and other classes that are useful in 
+  testing the correct functioning of an OSGi Corda node
+* `cordapps:cordapp-to-be-stopped-and-starting`: This CorDapp is stopped and started during testing to generate bundle 
+  events
 * `bad-cordapps:cordapp-has-cordapp-dependency-on-library`: This CorDapp should fail to load as it declares a 
   `cordapp` dependency on a module that is not a CorDapp
 * `bad-cordapps:cordapp-imports-non-core-platform-bundle`: This CorDapp should fail to load as it tries to depend on a 
@@ -20,10 +21,10 @@ There are four CorDapps:
 
 There are also two library modules:
 
-* `shared-lib`: A library shared by `cordapp-one` and `cordapp-two` to test the isolation of libraries between 
+* `libs:shared-lib`: A library shared by `cordapp-one` and `cordapp-two` to test the isolation of libraries between 
   CorDapps
-* `cordapp-one-lib`: A library that only `cordapp-one` depends on, to test that its classes are not visible to other 
-  CorDapps
+* `libs:cordapp-one-lib`: A library that only `cordapp-one` depends on, to test that its classes are not visible to 
+  other CorDapps
 
 # Running the tests
 
@@ -57,5 +58,5 @@ There are also some implicit tests, which "execute" just by turning on the node:
 * CorDapp One contains a set of popular dependencies that are accessed in `DependencyImports.kt`. This allows us to 
   test that these popular dependencies do not clash with Corda's own packages
 * CorDapp One and CorDapp Two both contain a non-flow class with the same fully-qualified name, 
-  `net.corda.joel.duplicate.DuplicateNonFlowClass`. This allows us to test that two non-flow classes with the same 
+  `DuplicateNonFlowClass`. This allows us to test that two non-flow classes with the same 
   name can exist in two different CorDapps

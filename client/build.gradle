@@ -4,8 +4,8 @@ dependencies {
     implementation "$cordaReleaseGroup:corda-ledger:$defaultLibraryVersion"
     implementation "$cordaReleaseGroup:corda-legacy-api:$defaultLibraryVersion"
 
-    implementation project(":cordapp-one")
-    implementation project(":cordapp-two")
+    implementation project(":cordapps:cordapp-one")
+    implementation project(":cordapps:cordapp-two")
 }
 
 task run(type: JavaExec) {
