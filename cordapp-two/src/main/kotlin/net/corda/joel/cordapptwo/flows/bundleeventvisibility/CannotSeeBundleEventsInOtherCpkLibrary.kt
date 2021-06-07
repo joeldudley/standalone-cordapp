@@ -5,6 +5,7 @@ import net.corda.v5.application.flows.Flow
 import net.corda.v5.application.flows.InitiatingFlow
 import net.corda.v5.application.flows.StartableByRPC
 import net.corda.v5.application.flows.flowservices.dependencies.CordaInject
+import net.joel.sharedlib.SHARED_LIB
 
 @InitiatingFlow
 @StartableByRPC
@@ -13,7 +14,7 @@ class CannotSeeBundleEventsInOtherCpkLibrary : Flow<Unit> {
     lateinit var cordappEventRecorderService: CordappTwoEventRecorderService
 
     override fun call() {
-        if (cordappEventRecorderService.bundleEventSources.contains("shared-lib")) {
+        if (cordappEventRecorderService.bundleEventSources.contains(SHARED_LIB)) {
             throw IllegalStateException("A CorDapp bundle could see bundle events in another CPK's library bundle.")
         }
     }

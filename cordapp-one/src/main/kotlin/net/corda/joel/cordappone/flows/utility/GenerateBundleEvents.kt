@@ -1,11 +1,11 @@
 package net.corda.joel.cordappone.flows.utility
 
-import net.corda.joel.cordapptwo.flows.utility.SetSharedLibStatic
 import net.corda.v5.application.flows.Flow
 import net.corda.v5.application.flows.InitiatingFlow
 import net.corda.v5.application.flows.StartableByRPC
 import net.corda.v5.base.annotations.Suspendable
-import net.joel.sharedlib.ClassWithModifiableStatic
+import net.joel.sharedlib.CORDAPP_TO_BE_STOPPED_AND_STARTED
+import net.joel.sharedlib.SHARED_LIB
 import org.osgi.framework.FrameworkUtil
 
 /** Generates bundle events by restarting one of CorDapp One's library bundles and CorDapp Two's CorDapp bundle. */
@@ -14,13 +14,14 @@ import org.osgi.framework.FrameworkUtil
 class GenerateBundleEvents : Flow<Unit> {
     @Suspendable
     override fun call() {
-        val sharedLibraryBundle = FrameworkUtil.getBundle(ClassWithModifiableStatic::class.java)
+        val allBundles = FrameworkUtil.getBundle(this::class.java).bundleContext.bundles
 
+        val sharedLibraryBundle = allBundles.find { bundle -> bundle.symbolicName == SHARED_LIB }!!
         sharedLibraryBundle.stop()
         sharedLibraryBundle.start()
 
-        val cordappTwoBundle = FrameworkUtil.getBundle(SetSharedLibStatic::class.java)
-        cordappTwoBundle.stop()
-        cordappTwoBundle.start()
+        val cordappBundle = allBundles.find { bundle -> bundle.symbolicName == CORDAPP_TO_BE_STOPPED_AND_STARTED }!!
+        cordappBundle.stop()
+        cordappBundle.start()
     }
 }

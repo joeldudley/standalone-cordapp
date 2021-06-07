@@ -8,13 +8,14 @@ import net.corda.v5.application.flows.flowservices.dependencies.CordaInject
 
 @InitiatingFlow
 @StartableByRPC
-class CanSeeServiceEventsInOwnLibrary : Flow<Unit> {
+class CanSeeServiceEventsInOtherCpkCordappBundle : Flow<Unit> {
     @CordaInject
     lateinit var cordappEventRecorderService: CordappTwoEventRecorderService
 
     override fun call() {
-        if (!cordappEventRecorderService.serviceEventSources.contains("shared-lib")) {
-            throw IllegalStateException("A CorDapp bundle could not see service events in its own library bundle.")
+        if (!cordappEventRecorderService.serviceEventSources.contains("com.template.cordapp-one")) {
+            throw IllegalStateException("A CorDapp bundle could not see service events in another CPK's CorDapp " +
+                    "bundle.")
         }
     }
 }

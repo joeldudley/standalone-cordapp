@@ -45,6 +45,7 @@ dependencies {
 
     cordapp project(":cordapp-one")
     cordapp project(":cordapp-two")
+    cordapp project(":cordapp-to-be-stopped-and-started")
     cordapp project(":bad-cordapps:cordapp-has-cordapp-dependency-on-library")
     cordapp project(":bad-cordapps:cordapp-imports-non-core-platform-bundle")
     cordapp project(":bad-cordapps:cordapp-has-same-bundle-symbolic-name")
@@ -59,6 +60,7 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ["jar"]) {
         }
         cordapp project(":cordapp-one")
         cordapp project(":cordapp-two")
+        cordapp project(":cordapp-to-be-stopped-and-started")
         // These CorDapps are disabled by default, as they cause the node to fail.
         // cordapp project(":bad-cordapps:cordapp-has-cordapp-dependency-on-library")
         // cordapp project(":bad-cordapps:cordapp-imports-non-core-platform-bundle")

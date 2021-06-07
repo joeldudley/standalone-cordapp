@@ -6,6 +6,7 @@ There are four CorDapps:
 
 * `cordapp-one` and `cordapp-two`: These contain various flows and other classes that are useful in testing the 
   correct functioning of an OSGi Corda node
+* `cordapp-to-be-stopped-and-starting`: This CorDapp is stopped and started during testing to generate bundle events
 * `bad-cordapps:cordapp-has-cordapp-dependency-on-library`: This CorDapp should fail to load as it declares a 
   `cordapp` dependency on a module that is not a CorDapp
 * `bad-cordapps:cordapp-imports-non-core-platform-bundle`: This CorDapp should fail to load as it tries to depend on a 
