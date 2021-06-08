@@ -4,9 +4,7 @@ import net.corda.joel.cordappone.DummyCordappOneContract
 import net.corda.joel.cordappone.DummyCordappOneState
 import net.corda.joel.cordapptwo.DummyCordappTwoCommand
 import net.corda.systemflows.FinalityFlow
-import net.corda.v5.application.flows.Flow
-import net.corda.v5.application.flows.InitiatingFlow
-import net.corda.v5.application.flows.StartableByRPC
+import net.corda.v5.application.flows.*
 import net.corda.v5.application.flows.flowservices.FlowEngine
 import net.corda.v5.application.flows.flowservices.FlowIdentity
 import net.corda.v5.application.flows.flowservices.dependencies.CordaInject
@@ -22,7 +20,10 @@ import java.time.Duration
  */
 @InitiatingFlow
 @StartableByRPC
-class CanBuildTxFromMultipleCordappsAndTheirLibs : Flow<Unit> {
+class CanBuildTxFromMultipleCordappsAndTheirLibs @JsonConstructor constructor(
+    private val params: RpcStartFlowRequestParameters
+) : Flow<Unit> {
+
     @CordaInject
     lateinit var notaryLookupService: NotaryLookupService
 

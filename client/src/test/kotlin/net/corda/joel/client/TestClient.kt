@@ -1,9 +1,9 @@
 package net.corda.joel.client
 
-import com.google.gson.GsonBuilder
+import net.corda.client.rpc.PermissionException
 import net.corda.client.rpc.flow.FlowStarterRPCOps
+import net.corda.client.rpc.flow.RpcFlowStatus
 import net.corda.client.rpc.flow.RpcStartFlowRequest
-import net.corda.client.rpc.flow.RpcStartFlowResponse
 import net.corda.joel.cordappone.flows.CanRestartFromCheckpoint
 import net.corda.joel.cordappone.flows.LibsAreIsolated
 import net.corda.joel.cordappone.flows.bundleeventvisibility.CanSeeBundleEventsInOtherCpkCordappBundle
@@ -23,7 +23,7 @@ import net.corda.joel.cordapptwo.flows.serviceeventvisibility.CanSeeServiceEvent
 import net.corda.joel.cordapptwo.flows.serviceeventvisibility.CannotSeeServiceEventsInOtherCpkLibrary
 import net.corda.joel.cordapptwo.flows.servicevisibility.CanSeeServiceInOtherCpkCordappBundle
 import net.corda.joel.cordapptwo.flows.servicevisibility.CannotSeeServiceInOtherCpkLibrary
-import net.corda.joel.cordapptwo.flows.utility.SetSharedLibStatic
+import net.corda.joel.cordapptwo.flows.utility.IncrementSharedLibStatic
 import net.corda.joel.sharedlib.FlowInLibrary
 import net.corda.v5.application.flows.Flow
 import net.corda.v5.application.flows.RpcStartFlowRequestParameters
@@ -31,11 +31,12 @@ import net.corda.v5.httprpc.client.HttpRpcClient
 import net.corda.v5.httprpc.client.config.HttpRpcClientConfig
 import org.junit.jupiter.api.*
 import java.io.File
+import java.util.*
 
 private const val HTTP_ADDRESS = "http://localhost:8888/api/v1/"
 private const val HTTP_USERNAME = "user"
 private const val HTTP_PASSWORD = "test"
-private const val CPKS_DIRECTORY = "./build/nodes/NotaryNode/cpks"
+private const val CPKS_DIRECTORY = "../build/nodes/NotaryNode/cpks"
 
 class ClientTests {
     private lateinit var httpRpcClient: HttpRpcClient<FlowStarterRPCOps>
@@ -58,8 +59,8 @@ class ClientTests {
     /** We check that CorDapps receive separate copies of shared libraries. */
     @Test
     fun testStaticsIsolation() {
-        // We set the value of a static in CorDapp Two's copy of a shared library.
-        runFlowSync(SetSharedLibStatic::class.java, 99)
+        // We increment the value of a static in CorDapp Two's copy of a shared library.
+        runFlowSync(IncrementSharedLibStatic::class.java)
         // We check that the value of the static is unchanged in CorDapp One's copy of the same library.
         runFlowSync(LibsAreIsolated::class.java)
     }
@@ -119,8 +120,7 @@ class ClientTests {
     /** We test that flows in libraries cannot be started via RPC. */
     @Test
     fun testFlows() {
-        // TODO: Move to `UnregisteredFlowException` once have updated the local install of Corda 5.
-        assertThrows<IllegalArgumentException> {
+        assertThrows<PermissionException> {
             runFlowSync(FlowInLibrary::class.java)
         }
     }
@@ -130,10 +130,9 @@ class ClientTests {
     @Test
     fun testRestartFromCheckpoint() {
         // We set the node to exit when running the flow.
-        val setToFail = true
-        runFlowSync(CanRestartFromCheckpoint::class.java, setToFail)
+        runFlowSync(CanRestartFromCheckpoint::class.java, """{"setToFail": true}""")
         // We run the flow.
-        runFlowAsync(CanRestartFromCheckpoint::class.java)
+        runFlowAsync(CanRestartFromCheckpoint::class.java, """{"setToFail": false}""")
         // The node will crash. Once restarted, the flow should automatically complete.
     }
 
@@ -142,9 +141,8 @@ class ClientTests {
     @Test
     fun testRebuildingOfCpkCache() {
         // We set the node to exit when running the flow.
-        val setToFail = true
-        runFlowSync(KillNode::class.java, setToFail)
-        runFlowAsync(KillNode::class.java)
+        runFlowSync(KillNode::class.java, """{"setToFail": true}""")
+        runFlowAsync(KillNode::class.java, """{"setToFail": false}""")
 
         // The node will crash. Once restarted (after deleting its CPK directory, below), it should start
         // successfully.
@@ -155,18 +153,20 @@ class ClientTests {
         if (!isDeleted) throw IllegalStateException("Node CPKs directory could not be deleted.")
     }
 
-    /** Run [flowClass] with [args] and await the result. */
-    private fun runFlowSync(flowClass: Class<out Flow<*>>, vararg args: Any?) {
-        val rpcStartFlowResponse = runFlowAsync(flowClass, args)
-        // TODO: Does this wait properly?
-        httpRpcOps.getFlowOutcome(rpcStartFlowResponse.stateMachineRunId.uuid.toString())
+    /** Run [flowClass] with [jsonArgs] and await the result. */
+    private fun runFlowSync(flowClass: Class<out Flow<*>>, jsonArgs: String = "") {
+        val flowUuid = runFlowAsync(flowClass, jsonArgs)
+        while (httpRpcOps.getFlowOutcome(flowUuid).status != RpcFlowStatus.COMPLETED) {
+            Thread.sleep(100)
+        }
     }
 
-    /** Run [flowClass] with [args] but do not await the result. */
-    private fun runFlowAsync(flowClass: Class<out Flow<*>>, vararg args: Any?): RpcStartFlowResponse {
-        println(GsonBuilder().create().toJson(args)) // Temporary, just checking the JSON comes out ok.
-        val rpcStartFlowRequestParameters = RpcStartFlowRequestParameters(GsonBuilder().create().toJson(args))
-        val rpcStartFlowRequest = RpcStartFlowRequest(flowClass.name, "", rpcStartFlowRequestParameters)
-        return httpRpcOps.startFlow(rpcStartFlowRequest)
+    /** Run [flowClass] with [jsonArgs] and return the flow's UUID as a string. */
+    private fun runFlowAsync(flowClass: Class<out Flow<*>>, jsonArgs: String = ""): String {
+        val rpcStartFlowRequestParameters = RpcStartFlowRequestParameters(jsonArgs)
+        val clientId = "client-${UUID.randomUUID()}"
+        val rpcStartFlowRequest = RpcStartFlowRequest(flowClass.name, clientId, rpcStartFlowRequestParameters)
+        val rpcFlowStartResponse = httpRpcOps.startFlow(rpcStartFlowRequest)
+        return rpcFlowStartResponse.stateMachineRunId.uuid.toString()
     }
 }

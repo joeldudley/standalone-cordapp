@@ -1,8 +1,8 @@
 package net.corda.joel.cordappone.flows
 
-import net.corda.v5.application.flows.Flow
-import net.corda.v5.application.flows.InitiatingFlow
-import net.corda.v5.application.flows.StartableByRPC
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.node.ObjectNode
+import net.corda.v5.application.flows.*
 import net.corda.v5.application.flows.flowservices.FlowIdentity
 import net.corda.v5.application.flows.flowservices.FlowMessaging
 import net.corda.v5.application.flows.flowservices.dependencies.CordaInject
@@ -11,10 +11,15 @@ import kotlin.system.exitProcess
 
 @InitiatingFlow
 @StartableByRPC
-class CanRestartFromCheckpoint(private val setToFail: Boolean = false) : Flow<Unit> {
+class CanRestartFromCheckpoint @JsonConstructor constructor(params: RpcStartFlowRequestParameters) : Flow<Unit> {
+
     companion object {
         private var shouldFail = false
     }
+
+    private val setToFail = ObjectMapper()
+        .readValue(params.parametersInJson, ObjectNode::class.java)["setToFail"]
+        .toString()
 
     @CordaInject
     lateinit var flowIdentity: FlowIdentity
@@ -24,7 +29,7 @@ class CanRestartFromCheckpoint(private val setToFail: Boolean = false) : Flow<Un
 
     @Suspendable
     override fun call() {
-        if (setToFail) {
+        if (setToFail == "true") {
             shouldFail = true
 
         } else {

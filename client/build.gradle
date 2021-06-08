@@ -9,7 +9,6 @@ dependencies {
     testImplementation project(":libs:shared-lib")
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
-    testImplementation "com.google.code.gson:gson:$gsonVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
 }
 
