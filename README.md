@@ -41,9 +41,9 @@ The majority of the tests are in `TestClient.kt`. These can be run as follows:
   * The installation of the `bad-cordapps:*` is commented out because they cause the node to crash. These can be 
     re-enabled to test that they cause the node to fail at start-up
 
-* Run the automated tests by running `./gradlew client:run`
+* Run the tests in the `client` module
   
-  * Some tests are commented out because they cause the node to crash as part of normal execution. These can be 
+  * Some tests are disabled out because they cause the node to crash as part of normal execution. These can be 
     re-enabled to test specific behaviour
 
 ## Bad CorDapp tests

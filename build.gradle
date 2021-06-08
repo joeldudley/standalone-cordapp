@@ -29,8 +29,8 @@ allprojects {
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
         kotlinOptions {
-            languageVersion = "1.2"
-            apiVersion = "1.2"
+            languageVersion = "1.4"
+            apiVersion = "1.4"
             jvmTarget = "11"
             freeCompilerArgs += ["-Xjvm-default=all"]
         }
@@ -78,19 +78,19 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ["jar"]) {
         }
         h2Port 10005
         rpcUsers = [[user: "user", "password": "test", "permissions": ["ALL"]]]
-        // extraConfig = [
-        // Exposes an HTTP interface to the node.
-        // "httpRpcSettings.address": "localhost:8888",
-        // "httpRpcSettings.context.basePath": "/api",
-        // "httpRpcSettings.context.description": "Exposing RPCOps interfaces as webservices",
-        // "httpRpcSettings.context.title": "HTTP RPC demo",
-        // "httpRpcSettings.context.version": "1",
-        // Runs against Postgres.
-        //  "dataSourceProperties.dataSourceClassName":"org.postgresql.ds.PGSimpleDataSource",
-        //  "dataSourceProperties.dataSource.url":"jdbc:postgresql://localhost:5432/postgres",
-        //  "dataSourceProperties.dataSource.password" : "my_password",
-        //  "dataSourceProperties.dataSource.user" : "party_a"
-        // ]
+        extraConfig = [
+                // Exposes an HTTP interface to the node.
+                "httpRpcSettings.address"            : "localhost:8888",
+                "httpRpcSettings.context.basePath"   : "/api",
+                "httpRpcSettings.context.description": "Exposing RPCOps interfaces as webservices",
+                "httpRpcSettings.context.title"      : "HTTP RPC demo",
+                "httpRpcSettings.context.version"    : "1",
+                // Runs against Postgres.
+                //  "dataSourceProperties.dataSourceClassName":"org.postgresql.ds.PGSimpleDataSource",
+                //  "dataSourceProperties.dataSource.url":"jdbc:postgresql://localhost:5432/postgres",
+                //  "dataSourceProperties.dataSource.password" : "my_password",
+                //  "dataSourceProperties.dataSource.user" : "party_a"
+        ]
         // drivers = ["/Users/joeldudley/Desktop/postgres_node/postgresql-42.1.4.jar"]
     }
     // A second node, if needed.
