@@ -1,7 +1,9 @@
 package net.corda.joel.client
 
-import net.corda.client.rpc.CordaRPCClient
-import net.corda.joel.cordappone.flows.CanBuildTxFromMultipleCordappsAndTheirLibs
+import net.corda.client.rpc.PermissionException
+import net.corda.client.rpc.flow.FlowStarterRPCOps
+import net.corda.client.rpc.flow.RpcFlowStatus
+import net.corda.client.rpc.flow.RpcStartFlowRequest
 import net.corda.joel.cordappone.flows.CanRestartFromCheckpoint
 import net.corda.joel.cordappone.flows.LibsAreIsolated
 import net.corda.joel.cordappone.flows.bundleeventvisibility.CanSeeBundleEventsInOtherCpkCordappBundle
@@ -12,59 +14,60 @@ import net.corda.joel.cordappone.flows.serviceeventvisibility.CanSeeServiceEvent
 import net.corda.joel.cordappone.flows.servicevisibility.CanSeeServiceInOwnCordappBundle
 import net.corda.joel.cordappone.flows.servicevisibility.CanSeeServiceInOwnLibrary
 import net.corda.joel.cordappone.flows.servicevisibility.CannotSeeServiceInNonCoreSandbox
-import net.corda.joel.cordappone.flows.utility.*
+import net.corda.joel.cordappone.flows.utility.GenerateBundleEvents
+import net.corda.joel.cordappone.flows.utility.KillNode
+import net.corda.joel.cordappone.flows.utility.RegisterCordappAndLibraryServices
 import net.corda.joel.cordapptwo.flows.bundleeventvisibility.CannotSeeBundleEventsInOtherCpkLibrary
 import net.corda.joel.cordapptwo.flows.bundlevisibility.CannotSeeLibraryBundleInOtherCpk
 import net.corda.joel.cordapptwo.flows.serviceeventvisibility.CanSeeServiceEventsInOtherCpkCordappBundle
 import net.corda.joel.cordapptwo.flows.serviceeventvisibility.CannotSeeServiceEventsInOtherCpkLibrary
 import net.corda.joel.cordapptwo.flows.servicevisibility.CanSeeServiceInOtherCpkCordappBundle
 import net.corda.joel.cordapptwo.flows.servicevisibility.CannotSeeServiceInOtherCpkLibrary
-import net.corda.joel.cordapptwo.flows.utility.SetSharedLibStatic
+import net.corda.joel.cordapptwo.flows.utility.IncrementSharedLibStatic
 import net.corda.joel.sharedlib.FlowInLibrary
 import net.corda.v5.application.flows.Flow
-import net.corda.v5.base.util.NetworkHostAndPort.Companion.parse
+import net.corda.v5.application.flows.RpcStartFlowRequestParameters
+import net.corda.v5.httprpc.client.HttpRpcClient
+import net.corda.v5.httprpc.client.config.HttpRpcClientConfig
+import org.junit.jupiter.api.*
 import java.io.File
+import java.util.*
 
-private const val CPKS_DIRECTORY = "./build/nodes/NotaryNode/cpks"
+private const val HTTP_ADDRESS = "http://localhost:8888/api/v1/"
+private const val HTTP_USERNAME = "user"
+private const val HTTP_PASSWORD = "test"
+private const val CPKS_DIRECTORY = "../build/nodes/NotaryNode/cpks"
 
-fun main(args: Array<String>) {
-    val testClient = TestClient()
-    testClient.test()
-    testClient.close()
-}
+class ClientTests {
+    private lateinit var httpRpcClient: HttpRpcClient<FlowStarterRPCOps>
+    private lateinit var httpRpcOps: FlowStarterRPCOps
 
-class TestClient {
-    private val address = parse("localhost:10003")
-    private val username = "user"
-    private val password = "test"
+    /** Creates a [HttpRpcClient] for the node and retrieves the [FlowStarterRPCOps]. */
+    @BeforeEach
+    fun setUp() {
+        val httpConfig = HttpRpcClientConfig().username(HTTP_USERNAME).password(HTTP_PASSWORD)
+        httpRpcClient = HttpRpcClient(HTTP_ADDRESS, FlowStarterRPCOps::class.java, httpConfig)
+        httpRpcOps = httpRpcClient.start().proxy
+    }
 
-    private val cordaRpcOpsClient = CordaRPCClient(address)
-    private val cordaRpcOpsConnection = cordaRpcOpsClient.start(username, password)
-    private val cordaRpcOpsProxy = cordaRpcOpsConnection.proxy
-
-    fun test() {
-        runFlowSync(FlowInLibrary::class.java)
-
-        testStaticsIsolation()
-        testBundleVisibility()
-        testServiceVisibility()
-        testTransactions()
-
-        // Enabling these tests causes node to exit. Only one should be enabled at a time.
-        // testRestartFromCheckpoint()
-        // testRebuildingOfCpkCache()
+    /** Closes down the [httpRpcClient]. */
+    @AfterEach
+    fun tearDown() {
+        httpRpcClient.close()
     }
 
     /** We check that CorDapps receive separate copies of shared libraries. */
-    private fun testStaticsIsolation() {
-        // We set the value of a static in CorDapp Two's copy of a shared library.
-        runFlowSync(SetSharedLibStatic::class.java, 99)
+    @Test
+    fun testStaticsIsolation() {
+        // We increment the value of a static in CorDapp Two's copy of a shared library.
+        runFlowSync(IncrementSharedLibStatic::class.java)
         // We check that the value of the static is unchanged in CorDapp One's copy of the same library.
         runFlowSync(LibsAreIsolated::class.java)
     }
 
     /** We check that bundles can only see CorDapp bundles, their own library bundles, and core platform bundles. */
-    private fun testBundleVisibility() {
+    @Test
+    fun testBundleVisibility() {
         runFlowSync(CanSeeBundleInCoreSandbox::class.java)
         runFlowSync(CannotSeeBundleInNonCoreSandbox::class.java)
 
@@ -90,7 +93,8 @@ class TestClient {
      * They should also be able to see services registered by the core platform bundles, and not see services
      * registered by non-core platform bundles. Unfortunately, we can't test this, as there aren't any.
      */
-    private fun testServiceVisibility() {
+    @Test
+    fun testServiceVisibility() {
         // We register services from the CorDapp bundle of CorDapp One and a library bundle of CorDapp One.
         runFlowSync(RegisterCordappAndLibraryServices::class.java)
 
@@ -107,29 +111,38 @@ class TestClient {
     }
 
     /** We test that transactions containing classes from multiple CorDapp and library bundles can be committed. */
-    private fun testTransactions() {
+    @Test
+    fun testTransactions() {
         // TODO - Currently broken.
         // runFlowSync(CanBuildTxFromMultipleCordappsAndTheirLibs::class.java)
     }
 
+    /** We test that flows in libraries cannot be started via RPC. */
+    @Test
+    fun testFlows() {
+        assertThrows<PermissionException> {
+            runFlowSync(FlowInLibrary::class.java)
+        }
+    }
+
     /** We check that a node can restart successfully from a checkpoint. */
-    @Suppress("unused")
-    private fun testRestartFromCheckpoint() {
+    @Disabled("Enabling this test causes node to exit as part of normal execution.")
+    @Test
+    fun testRestartFromCheckpoint() {
         // We set the node to exit when running the flow.
-        val setToFail = true
-        runFlowSync(CanRestartFromCheckpoint::class.java, setToFail)
+        runFlowSync(CanRestartFromCheckpoint::class.java, """{"setToFail": true}""")
         // We run the flow.
-        runFlowAsync(CanRestartFromCheckpoint::class.java)
+        runFlowAsync(CanRestartFromCheckpoint::class.java, """{"setToFail": false}""")
         // The node will crash. Once restarted, the flow should automatically complete.
     }
 
     /** We check that a node can successfully rebuild its CPK cache if needed. */
-    @Suppress("unused")
-    private fun testRebuildingOfCpkCache() {
+    @Disabled("Enabling this test causes node to exit as part of normal execution.")
+    @Test
+    fun testRebuildingOfCpkCache() {
         // We set the node to exit when running the flow.
-        val setToFail = true
-        runFlowSync(KillNode::class.java, setToFail)
-        runFlowAsync(KillNode::class.java)
+        runFlowSync(KillNode::class.java, """{"setToFail": true}""")
+        runFlowAsync(KillNode::class.java, """{"setToFail": false}""")
 
         // The node will crash. Once restarted (after deleting its CPK directory, below), it should start
         // successfully.
@@ -140,18 +153,20 @@ class TestClient {
         if (!isDeleted) throw IllegalStateException("Node CPKs directory could not be deleted.")
     }
 
-    /** Closes the [cordaRpcOpsConnection]. */
-    fun close() {
-        cordaRpcOpsConnection.close()
+    /** Run [flowClass] with [jsonArgs] and await the result. */
+    private fun runFlowSync(flowClass: Class<out Flow<*>>, jsonArgs: String = "") {
+        val flowUuid = runFlowAsync(flowClass, jsonArgs)
+        while (httpRpcOps.getFlowOutcome(flowUuid).status != RpcFlowStatus.COMPLETED) {
+            Thread.sleep(100)
+        }
     }
 
-    /** Run [flowClass] with [args] and await the result. */
-    private fun runFlowSync(flowClass: Class<out Flow<*>>, vararg args: Any?) {
-        cordaRpcOpsProxy.startFlowDynamic(flowClass, *args).returnValue.get()
-    }
-
-    /** Run [flowClass] with [args] but do not await the result. */
-    private fun runFlowAsync(flowClass: Class<out Flow<*>>, vararg args: Any?) {
-        cordaRpcOpsProxy.startFlowDynamic(flowClass, *args)
+    /** Run [flowClass] with [jsonArgs] and return the flow's UUID as a string. */
+    private fun runFlowAsync(flowClass: Class<out Flow<*>>, jsonArgs: String = ""): String {
+        val rpcStartFlowRequestParameters = RpcStartFlowRequestParameters(jsonArgs)
+        val clientId = "client-${UUID.randomUUID()}"
+        val rpcStartFlowRequest = RpcStartFlowRequest(flowClass.name, clientId, rpcStartFlowRequestParameters)
+        val rpcFlowStartResponse = httpRpcOps.startFlow(rpcStartFlowRequest)
+        return rpcFlowStartResponse.stateMachineRunId.uuid.toString()
     }
 }

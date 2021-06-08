@@ -6,7 +6,6 @@ import net.corda.v5.application.identity.Party
 import net.corda.v5.ledger.contracts.BelongsToContract
 import net.corda.v5.ledger.contracts.Contract
 import net.corda.v5.ledger.contracts.ContractState
-import net.corda.v5.ledger.contracts.TypeOnlyCommandData
 import net.corda.v5.ledger.transactions.LedgerTransaction
 
 class DummyCordappOneContract : Contract {
@@ -24,5 +23,3 @@ class DummyCordappOneState : ContractState {
     @Suppress("unused")
     val classFromSharedLibrary = ClassWithModifiableStatic()
 }
-
-class DummyCordappOneCommand : TypeOnlyCommandData()

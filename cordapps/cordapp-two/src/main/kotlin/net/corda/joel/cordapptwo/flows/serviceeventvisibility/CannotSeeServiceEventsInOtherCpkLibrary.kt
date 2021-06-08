@@ -2,14 +2,15 @@ package net.corda.joel.cordapptwo.flows.serviceeventvisibility
 
 import net.corda.joel.cordapptwo.CordappTwoEventRecorderService
 import net.corda.joel.sharedlib.CORDAPP_ONE_LIB
-import net.corda.v5.application.flows.Flow
-import net.corda.v5.application.flows.InitiatingFlow
-import net.corda.v5.application.flows.StartableByRPC
+import net.corda.v5.application.flows.*
 import net.corda.v5.application.flows.flowservices.dependencies.CordaInject
 
 @InitiatingFlow
 @StartableByRPC
-class CannotSeeServiceEventsInOtherCpkLibrary : Flow<Unit> {
+class CannotSeeServiceEventsInOtherCpkLibrary @JsonConstructor constructor(
+    private val params: RpcStartFlowRequestParameters
+) : Flow<Unit> {
+
     @CordaInject
     lateinit var cordappEventRecorderService: CordappTwoEventRecorderService
 

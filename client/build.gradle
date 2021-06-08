@@ -1,15 +1,17 @@
 dependencies {
-    implementation "$cordaReleaseGroup:corda-client-extensions-rpc:$defaultLibraryVersion"
-    implementation "$cordaReleaseGroup:corda-client-rpc:$defaultLibraryVersion"
-    implementation "$cordaReleaseGroup:corda-ledger:$defaultLibraryVersion"
-    implementation "$cordaReleaseGroup:corda-legacy-api:$defaultLibraryVersion"
+    testImplementation "$cordaReleaseGroup:corda-client-extensions-rpc:$defaultLibraryVersion"
+    testImplementation "$cordaReleaseGroup:corda-client-rpc:$defaultLibraryVersion"
+    testImplementation "$cordaReleaseGroup:corda-http-rpc-client:$defaultLibraryVersion"
+    testImplementation "$cordaReleaseGroup:corda-ledger:$defaultLibraryVersion"
 
-    implementation project(":cordapps:cordapp-one")
-    implementation project(":cordapps:cordapp-two")
-    implementation project(":libs:shared-lib")
+    testImplementation project(":cordapps:cordapp-one")
+    testImplementation project(":cordapps:cordapp-two")
+    testImplementation project(":libs:shared-lib")
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
 }
 
-task run(type: JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-    main = "net.corda.joel.client.TestClientKt"
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
 }

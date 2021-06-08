@@ -1,16 +1,17 @@
 package net.corda.joel.cordappone.flows.bundleeventvisibility
 
 import net.corda.joel.cordappone.CordappOneEventRecorderService
-import net.corda.v5.application.flows.Flow
-import net.corda.v5.application.flows.InitiatingFlow
-import net.corda.v5.application.flows.StartableByRPC
 import net.corda.v5.application.flows.flowservices.dependencies.CordaInject
 import net.corda.joel.sharedlib.SHARED_LIB
+import net.corda.v5.application.flows.*
 import java.lang.IllegalStateException
 
 @InitiatingFlow
 @StartableByRPC
-class CanSeeBundleEventsInOwnLibrary : Flow<Unit> {
+class CanSeeBundleEventsInOwnLibrary @JsonConstructor constructor(
+    private val params: RpcStartFlowRequestParameters
+) : Flow<Unit> {
+
     @CordaInject
     lateinit var cordappEventRecorderService: CordappOneEventRecorderService
 

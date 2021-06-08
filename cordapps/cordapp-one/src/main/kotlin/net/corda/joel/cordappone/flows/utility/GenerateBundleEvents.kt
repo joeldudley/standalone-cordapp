@@ -1,17 +1,18 @@
 package net.corda.joel.cordappone.flows.utility
 
-import net.corda.v5.application.flows.Flow
-import net.corda.v5.application.flows.InitiatingFlow
-import net.corda.v5.application.flows.StartableByRPC
 import net.corda.v5.base.annotations.Suspendable
 import net.corda.joel.sharedlib.CORDAPP_TO_BE_STOPPED_AND_STARTED
 import net.corda.joel.sharedlib.SHARED_LIB
+import net.corda.v5.application.flows.*
 import org.osgi.framework.FrameworkUtil
 
 /** Generates bundle events by restarting one of CorDapp One's library bundles and CorDapp Two's CorDapp bundle. */
 @InitiatingFlow
 @StartableByRPC
-class GenerateBundleEvents : Flow<Unit> {
+class GenerateBundleEvents @JsonConstructor constructor(
+    private val params: RpcStartFlowRequestParameters
+) : Flow<Unit> {
+
     @Suspendable
     override fun call() {
         val allBundles = FrameworkUtil.getBundle(this::class.java).bundleContext.bundles
