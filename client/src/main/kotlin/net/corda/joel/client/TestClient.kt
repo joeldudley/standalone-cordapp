@@ -1,7 +1,6 @@
 package net.corda.joel.client
 
 import net.corda.client.rpc.CordaRPCClient
-import net.corda.joel.cordappone.flows.CanBuildTxFromMultipleCordappsAndTheirLibs
 import net.corda.joel.cordappone.flows.CanRestartFromCheckpoint
 import net.corda.joel.cordappone.flows.LibsAreIsolated
 import net.corda.joel.cordappone.flows.bundleeventvisibility.CanSeeBundleEventsInOtherCpkCordappBundle
@@ -12,7 +11,9 @@ import net.corda.joel.cordappone.flows.serviceeventvisibility.CanSeeServiceEvent
 import net.corda.joel.cordappone.flows.servicevisibility.CanSeeServiceInOwnCordappBundle
 import net.corda.joel.cordappone.flows.servicevisibility.CanSeeServiceInOwnLibrary
 import net.corda.joel.cordappone.flows.servicevisibility.CannotSeeServiceInNonCoreSandbox
-import net.corda.joel.cordappone.flows.utility.*
+import net.corda.joel.cordappone.flows.utility.GenerateBundleEvents
+import net.corda.joel.cordappone.flows.utility.KillNode
+import net.corda.joel.cordappone.flows.utility.RegisterCordappAndLibraryServices
 import net.corda.joel.cordapptwo.flows.bundleeventvisibility.CannotSeeBundleEventsInOtherCpkLibrary
 import net.corda.joel.cordapptwo.flows.bundlevisibility.CannotSeeLibraryBundleInOtherCpk
 import net.corda.joel.cordapptwo.flows.serviceeventvisibility.CanSeeServiceEventsInOtherCpkCordappBundle
@@ -43,12 +44,11 @@ class TestClient {
     private val cordaRpcOpsProxy = cordaRpcOpsConnection.proxy
 
     fun test() {
-        runFlowSync(FlowInLibrary::class.java)
-
         testStaticsIsolation()
         testBundleVisibility()
         testServiceVisibility()
         testTransactions()
+        testFlows()
 
         // Enabling these tests causes node to exit. Only one should be enabled at a time.
         // testRestartFromCheckpoint()
@@ -110,6 +110,16 @@ class TestClient {
     private fun testTransactions() {
         // TODO - Currently broken.
         // runFlowSync(CanBuildTxFromMultipleCordappsAndTheirLibs::class.java)
+    }
+
+    /** We test that flows in libraries cannot be started via RPC. */
+    private fun testFlows() {
+        try {
+            runFlowSync(FlowInLibrary::class.java)
+        } catch (e: Exception) {
+            return
+        }
+        throw IllegalArgumentException("Starting library flow via RPC did not throw an exception.")
     }
 
     /** We check that a node can restart successfully from a checkpoint. */
