@@ -43,7 +43,7 @@ cordapp {
     targetPlatformVersion platformVersion.toInteger()
     minimumPlatformVersion 1
     workflow {
-        name "Template Flows"
+        name "CorDapp One"
         versionId 1
     }
 }

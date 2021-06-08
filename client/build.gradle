@@ -6,6 +6,7 @@ dependencies {
 
     implementation project(":cordapps:cordapp-one")
     implementation project(":cordapps:cordapp-two")
+    implementation project(":libs:shared-lib")
 }
 
 task run(type: JavaExec) {

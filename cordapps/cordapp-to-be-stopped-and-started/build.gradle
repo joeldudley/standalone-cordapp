@@ -6,7 +6,7 @@ cordapp {
     targetPlatformVersion platformVersion.toInteger()
     minimumPlatformVersion 1
     workflow {
-        name "Template Flows"
+        name "CorDapp To Be Stopped And Started"
         versionId 1
     }
 }
