@@ -1,6 +1,7 @@
 package net.corda.joel.cordapptwo.flows.serviceeventvisibility
 
 import net.corda.joel.cordapptwo.CordappTwoEventRecorderService
+import net.corda.joel.sharedlib.CORDAPP_ONE
 import net.corda.v5.application.flows.Flow
 import net.corda.v5.application.flows.InitiatingFlow
 import net.corda.v5.application.flows.StartableByRPC
@@ -13,7 +14,7 @@ class CanSeeServiceEventsInOtherCpkCordappBundle : Flow<Unit> {
     lateinit var cordappEventRecorderService: CordappTwoEventRecorderService
 
     override fun call() {
-        if (!cordappEventRecorderService.serviceEventSources.contains("com.template.cordapp-one")) {
+        if (!cordappEventRecorderService.serviceEventSources.contains(CORDAPP_ONE)) {
             throw IllegalStateException("A CorDapp bundle could not see service events in another CPK's CorDapp " +
                     "bundle.")
         }

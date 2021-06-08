@@ -4,8 +4,8 @@ import net.corda.v5.application.flows.Flow
 import net.corda.v5.application.flows.InitiatingFlow
 import net.corda.v5.application.flows.StartableByRPC
 import net.corda.v5.base.annotations.Suspendable
-import net.joel.sharedlib.CORDAPP_TO_BE_STOPPED_AND_STARTED
-import net.joel.sharedlib.SHARED_LIB
+import net.corda.joel.sharedlib.CORDAPP_TO_BE_STOPPED_AND_STARTED
+import net.corda.joel.sharedlib.SHARED_LIB
 import org.osgi.framework.FrameworkUtil
 
 /** Generates bundle events by restarting one of CorDapp One's library bundles and CorDapp Two's CorDapp bundle. */

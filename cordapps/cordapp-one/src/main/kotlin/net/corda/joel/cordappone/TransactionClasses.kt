@@ -1,7 +1,8 @@
 package net.corda.joel.cordappone
 
+import net.corda.joel.cordapponelib.LibraryClassThatRegistersService
+import net.corda.joel.sharedlib.ClassWithModifiableStatic
 import net.corda.v5.application.identity.Party
-import net.corda.v5.application.utilities.JsonRepresentable
 import net.corda.v5.ledger.contracts.BelongsToContract
 import net.corda.v5.ledger.contracts.Contract
 import net.corda.v5.ledger.contracts.ContractState
@@ -13,16 +14,15 @@ class DummyCordappOneContract : Contract {
 }
 
 @BelongsToContract(DummyCordappOneContract::class)
-class DummyCordappOneState(
-    override val participants: List<Party> = emptyList()
-) : ContractState, JsonRepresentable {
+class DummyCordappOneState : ContractState {
+    override val participants = emptyList<Party>()
 
-    // TODO: Embedding a library class in a transaction's contents doesn't work currently.
-    // We embed a library class to check whether library classes can be (de)serialized.
-    // @Suppress("unused")
-    // val libraryClass = LibraryClass()
+    // We embed library classes to ensure library classes can be (de)serialized as part of transactions.
+    @Suppress("unused")
+    val classFromOwnLibrary = LibraryClassThatRegistersService()
 
-    override fun toJsonString() = ""
+    @Suppress("unused")
+    val classFromSharedLibrary = ClassWithModifiableStatic()
 }
 
 class DummyCordappOneCommand : TypeOnlyCommandData()

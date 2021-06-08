@@ -1,7 +1,7 @@
 package net.corda.joel.client
 
 import net.corda.client.rpc.CordaRPCClient
-import net.corda.joel.cordappone.flows.CanCommitTx
+import net.corda.joel.cordappone.flows.CanBuildTxFromMultipleCordappsAndTheirLibs
 import net.corda.joel.cordappone.flows.CanRestartFromCheckpoint
 import net.corda.joel.cordappone.flows.LibsAreIsolated
 import net.corda.joel.cordappone.flows.bundleeventvisibility.CanSeeBundleEventsInOtherCpkCordappBundle
@@ -115,9 +115,7 @@ class TestClient {
 
     /** We test that transactions containing classes from multiple CorDapp and library bundles can be committed. */
     private fun testTransactions() {
-        runFlowSync(CanCommitTx::class.java)
-        // TODO: Currently broken.
-        // runFlowSync(CanBuildTxFromMultipleCordappsAndTheirLibs::class.java)
+        runFlowSync(CanBuildTxFromMultipleCordappsAndTheirLibs::class.java)
     }
 
     /** We check that a node can restart successfully from a checkpoint. */

@@ -1,4 +1,4 @@
-package net.joel.sharedlib
+package net.corda.joel.cordapponelib
 
 import org.osgi.framework.FrameworkUtil
 import java.util.*

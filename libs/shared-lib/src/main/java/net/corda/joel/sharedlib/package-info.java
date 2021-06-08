@@ -1,4 +1,4 @@
 @Export
-package net.joel.sharedlib;
+package net.corda.joel.sharedlib;
 
 import org.osgi.annotation.bundle.Export;

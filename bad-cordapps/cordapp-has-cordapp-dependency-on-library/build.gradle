@@ -7,7 +7,7 @@ dependencies {
     cordaProvided "$cordaReleaseGroup:corda-ledger:$defaultLibraryVersion"
     cordaProvided "$cordaReleaseGroup:corda-serialization:$defaultLibraryVersion"
 
-    cordapp project(":libs:shared-lib")
+    cordapp project(":libs:cordapp-one-lib")
 }
 
 cordapp {

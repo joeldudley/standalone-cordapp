@@ -4,7 +4,7 @@ import net.corda.v5.application.flows.Flow
 import net.corda.v5.application.flows.InitiatingFlow
 import net.corda.v5.application.flows.StartableByRPC
 import net.corda.v5.base.annotations.Suspendable
-import net.joel.sharedlib.LIBRARY_CLASS_THAT_REGISTERS_SERVICE
+import net.corda.joel.sharedlib.LIBRARY_CLASS_THAT_REGISTERS_SERVICE
 import org.osgi.framework.FrameworkUtil
 
 @InitiatingFlow

@@ -13,13 +13,18 @@ import net.corda.v5.application.flows.flowservices.dependencies.CordaInject
 import net.corda.v5.base.annotations.Suspendable
 import net.corda.v5.ledger.services.NotaryLookupService
 import net.corda.v5.ledger.transactions.TransactionBuilderFactory
+import java.time.Duration
 
-// TODO: I don't actually include any library classes here.
+/**
+ * Commits a transaction containing classes from multiple CorDapps and their libraries.
+ *
+ * Note that the library classes are embedded in the `DummyCordappOneState`, rather than added directly.
+ */
 @InitiatingFlow
 @StartableByRPC
 class CanBuildTxFromMultipleCordappsAndTheirLibs : Flow<Unit> {
     @CordaInject
-    lateinit var networkLookupService: NotaryLookupService
+    lateinit var notaryLookupService: NotaryLookupService
 
     @CordaInject
     lateinit var transactionBuilderFactory: TransactionBuilderFactory
@@ -32,12 +37,15 @@ class CanBuildTxFromMultipleCordappsAndTheirLibs : Flow<Unit> {
 
     @Suspendable
     override fun call() {
-        val notary = networkLookupService.notaryIdentities.first()
+        val notary = notaryLookupService.notaryIdentities.first()
         val txBuilder = transactionBuilderFactory.create().setNotary(notary)
             .addOutputState(DummyCordappOneState(), DummyCordappOneContract::class.java.name)
             .addCommand(DummyCordappTwoCommand(), flowIdentity.ourIdentity.owningKey)
         txBuilder.verify()
         val stx = txBuilder.sign()
+
+        flowEngine.sleep(Duration.ZERO) // We force a checkpoint to ensure the transaction is (de)serializable.
+
         flowEngine.subFlow(FinalityFlow(stx, listOf()))
     }
 }
