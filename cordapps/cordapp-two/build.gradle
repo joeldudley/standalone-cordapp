@@ -3,10 +3,10 @@ plugins {
 }
 
 dependencies {
-    cordaProvided "$cordaReleaseGroup:corda-application:$defaultLibraryVersion"
-    cordaProvided "$cordaReleaseGroup:corda-flows:$defaultLibraryVersion"
-    cordaProvided "$cordaReleaseGroup:corda-ledger:$defaultLibraryVersion"
-    cordaProvided "$cordaReleaseGroup:corda-serialization:$defaultLibraryVersion"
+    cordaProvided "$cordaReleaseGroup:corda-application:$corda_release_version"
+    cordaProvided "$cordaReleaseGroup:corda-flows:$corda_release_version"
+    cordaProvided "$cordaReleaseGroup:corda-ledger:$corda_release_version"
+    cordaProvided "$cordaReleaseGroup:corda-serialization:$corda_release_version"
 
     implementation "org.osgi:osgi.core:$osgiVersion"
 

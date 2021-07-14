@@ -4,6 +4,7 @@ import net.corda.client.rpc.PermissionException
 import net.corda.client.rpc.flow.FlowStarterRPCOps
 import net.corda.client.rpc.flow.RpcFlowStatus
 import net.corda.client.rpc.flow.RpcStartFlowRequest
+import net.corda.joel.cordappone.flows.CanBuildTxFromMultipleCordappsAndTheirLibs
 import net.corda.joel.cordappone.flows.CanRestartFromCheckpoint
 import net.corda.joel.cordappone.flows.LibsAreIsolated
 import net.corda.joel.cordappone.flows.bundleeventvisibility.CanSeeBundleEventsInOtherCpkCordappBundle
@@ -113,8 +114,7 @@ class ClientTests {
     /** We test that transactions containing classes from multiple CorDapp and library bundles can be committed. */
     @Test
     fun testTransactions() {
-        // TODO - Currently broken.
-        // runFlowSync(CanBuildTxFromMultipleCordappsAndTheirLibs::class.java)
+         runFlowSync(CanBuildTxFromMultipleCordappsAndTheirLibs::class.java)
     }
 
     /** We test that flows in libraries cannot be started via RPC. */

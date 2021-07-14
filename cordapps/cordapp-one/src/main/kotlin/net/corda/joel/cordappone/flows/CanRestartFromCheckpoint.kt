@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import net.corda.v5.application.flows.*
 import net.corda.v5.application.flows.flowservices.FlowIdentity
 import net.corda.v5.application.flows.flowservices.FlowMessaging
-import net.corda.v5.application.flows.flowservices.dependencies.CordaInject
+import net.corda.v5.application.injection.CordaInject
 import net.corda.v5.base.annotations.Suspendable
 import kotlin.system.exitProcess
 

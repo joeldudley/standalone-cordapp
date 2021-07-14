@@ -1,9 +1,9 @@
 package net.corda.joel.cordapptwo.flows.bundleeventvisibility
 
 import net.corda.joel.cordapptwo.CordappTwoEventRecorderService
-import net.corda.v5.application.flows.flowservices.dependencies.CordaInject
 import net.corda.joel.sharedlib.SHARED_LIB
 import net.corda.v5.application.flows.*
+import net.corda.v5.application.injection.CordaInject
 
 @InitiatingFlow
 @StartableByRPC

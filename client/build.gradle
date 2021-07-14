@@ -1,8 +1,8 @@
 dependencies {
-    testImplementation "$cordaReleaseGroup:corda-client-extensions-rpc:$defaultLibraryVersion"
-    testImplementation "$cordaReleaseGroup:corda-client-rpc:$defaultLibraryVersion"
-    testImplementation "$cordaReleaseGroup:corda-http-rpc-client:$defaultLibraryVersion"
-    testImplementation "$cordaReleaseGroup:corda-ledger:$defaultLibraryVersion"
+    testImplementation "$cordaReleaseGroup:corda-client-extensions-rpc:$corda_release_version"
+    testImplementation "$cordaReleaseGroup:corda-client-rpc:$corda_release_version"
+    testImplementation "$cordaReleaseGroup:corda-http-rpc-client:$corda_release_version"
+    testImplementation "$cordaReleaseGroup:corda-ledger:$corda_release_version"
 
     testImplementation project(":cordapps:cordapp-one")
     testImplementation project(":cordapps:cordapp-two")

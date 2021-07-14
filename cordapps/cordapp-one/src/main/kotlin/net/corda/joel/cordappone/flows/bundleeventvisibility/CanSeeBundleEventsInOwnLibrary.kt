@@ -1,10 +1,9 @@
 package net.corda.joel.cordappone.flows.bundleeventvisibility
 
 import net.corda.joel.cordappone.CordappOneEventRecorderService
-import net.corda.v5.application.flows.flowservices.dependencies.CordaInject
 import net.corda.joel.sharedlib.SHARED_LIB
 import net.corda.v5.application.flows.*
-import java.lang.IllegalStateException
+import net.corda.v5.application.injection.CordaInject
 
 @InitiatingFlow
 @StartableByRPC

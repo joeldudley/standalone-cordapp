@@ -3,10 +3,10 @@ plugins {
 }
 
 dependencies {
-    cordaProvided "$cordaReleaseGroup:corda-application:$defaultLibraryVersion"
-    cordaProvided "$cordaReleaseGroup:corda-flows:$defaultLibraryVersion"
-    cordaProvided "$cordaReleaseGroup:corda-ledger:$defaultLibraryVersion"
-    cordaProvided "$cordaReleaseGroup:corda-serialization:$defaultLibraryVersion"
+    cordaProvided "$cordaReleaseGroup:corda-application:$corda_release_version"
+    cordaProvided "$cordaReleaseGroup:corda-flows:$corda_release_version"
+    cordaProvided "$cordaReleaseGroup:corda-ledger:$corda_release_version"
+    cordaProvided "$cordaReleaseGroup:corda-serialization:$corda_release_version"
 
     implementation "org.osgi:osgi.core:$osgiVersion"
 
@@ -20,9 +20,9 @@ dependencies {
     implementation group: "com.google.guava", name: "failureaccess", version: "1.0.1"
 
     // We also include some popular library dependencies, just to check that these can be loaded as libraries without
-    // issue. We don"t include any non-OSGi dependencies, which can"t be loaded.
-    implementation "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
-    implementation "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
+    // issue. We don't include any non-OSGi dependencies, which can't be loaded.
+//    implementation "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
+//    implementation "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
     implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
     implementation "com.google.code.gson:gson:2.8.7"
     implementation "com.google.guava:guava:30.1.1-jre"

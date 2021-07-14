@@ -3,7 +3,7 @@ package net.corda.joel.cordappone.flows.serviceeventvisibility
 import net.corda.joel.cordappone.CordappOneEventRecorderService
 import net.corda.joel.sharedlib.CORDAPP_ONE
 import net.corda.v5.application.flows.*
-import net.corda.v5.application.flows.flowservices.dependencies.CordaInject
+import net.corda.v5.application.injection.CordaInject
 
 @InitiatingFlow
 @StartableByRPC

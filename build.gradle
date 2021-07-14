@@ -41,7 +41,7 @@ apply plugin: "net.corda.plugins.cordformation"
 
 dependencies {
     implementation "$cordaReleaseGroup:corda:$corda_release_version"
-    implementation "$cordaReleaseGroup:corda-node-api:$defaultLibraryVersion"
+    implementation "$cordaReleaseGroup:corda-node-api:$corda_release_version"
 
     cordapp project(":cordapps:cordapp-one")
     cordapp project(":cordapps:cordapp-two")
@@ -76,15 +76,12 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ["jar"]) {
             address "localhost:10003"
             adminAddress "localhost:10004"
         }
-        h2Port 10005
         rpcUsers = [[user: "user", "password": "test", "permissions": ["ALL"]]]
         extraConfig = [
                 // Exposes an HTTP interface to the node.
                 "httpRpcSettings.address"            : "localhost:8888",
-                "httpRpcSettings.context.basePath"   : "/api",
                 "httpRpcSettings.context.description": "Exposing RPCOps interfaces as webservices",
-                "httpRpcSettings.context.title"      : "HTTP RPC demo",
-                "httpRpcSettings.context.version"    : "1",
+                "httpRpcSettings.context.title"      : "HTTP RPC demo"
                 // Runs against Postgres.
                 //  "dataSourceProperties.dataSourceClassName":"org.postgresql.ds.PGSimpleDataSource",
                 //  "dataSourceProperties.dataSource.url":"jdbc:postgresql://localhost:5432/postgres",
