@@ -1,11 +1,11 @@
 package net.corda.joel.cordappone.flows
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.node.ObjectNode
 import net.corda.v5.application.flows.*
 import net.corda.v5.application.flows.flowservices.FlowIdentity
 import net.corda.v5.application.flows.flowservices.FlowMessaging
 import net.corda.v5.application.injection.CordaInject
+import net.corda.v5.application.services.json.JsonMarshallingService
+import net.corda.v5.application.services.json.parseJson
 import net.corda.v5.base.annotations.Suspendable
 import kotlin.system.exitProcess
 
@@ -17,15 +17,16 @@ class CanRestartFromCheckpoint @JsonConstructor constructor(params: RpcStartFlow
         private var shouldFail = false
     }
 
-    private val setToFail = ObjectMapper()
-        .readValue(params.parametersInJson, ObjectNode::class.java)["setToFail"]
-        .toString()
+    private val setToFail = jsonMarshallingService.parseJson<Map<String, String>>(params.parametersInJson)["setToFail"]
 
     @CordaInject
     lateinit var flowIdentity: FlowIdentity
 
     @CordaInject
     lateinit var flowMessaging: FlowMessaging
+
+    @CordaInject
+    lateinit var jsonMarshallingService: JsonMarshallingService
 
     @Suspendable
     override fun call() {

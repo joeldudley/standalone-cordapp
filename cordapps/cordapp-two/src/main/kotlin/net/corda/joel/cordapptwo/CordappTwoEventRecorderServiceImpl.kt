@@ -1,13 +1,19 @@
 package net.corda.joel.cordapptwo
 
+import net.corda.v5.application.injection.CordaFlowInjectable
 import net.corda.v5.application.services.CordaService
 import net.corda.v5.application.services.lifecycle.ServiceLifecycleEvent
 import org.osgi.framework.FrameworkUtil
 
 /** A service that listens for and stores service and bundle events. */
-class CordappTwoEventRecorderService : CordaService {
-    val serviceEventSources = mutableSetOf<String?>()
-    val bundleEventSources = mutableSetOf<String?>()
+interface CordappTwoEventRecorderService : CordaService, CordaFlowInjectable {
+    val serviceEventSources: Set<String?>
+    val bundleEventSources: Set<String?>
+}
+
+class CordappTwoEventRecorderServiceImpl : CordappTwoEventRecorderService {
+    override val serviceEventSources = mutableSetOf<String?>()
+    override val bundleEventSources = mutableSetOf<String?>()
 
     override fun onEvent(event: ServiceLifecycleEvent) {
         val bundleContext = FrameworkUtil.getBundle(this::class.java).bundleContext

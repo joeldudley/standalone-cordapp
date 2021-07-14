@@ -1,8 +1,9 @@
 package net.corda.joel.cordappone.flows.utility
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.node.ObjectNode
 import net.corda.v5.application.flows.*
+import net.corda.v5.application.injection.CordaInject
+import net.corda.v5.application.services.json.JsonMarshallingService
+import net.corda.v5.application.services.json.parseJson
 import net.corda.v5.base.annotations.Suspendable
 import kotlin.system.exitProcess
 
@@ -22,9 +23,10 @@ class KillNode @JsonConstructor constructor(params: RpcStartFlowRequestParameter
         private var shouldFail = false
     }
 
-    private val setToFail = ObjectMapper()
-        .readValue(params.parametersInJson, ObjectNode::class.java)["setToFail"]
-        .toString()
+    private val setToFail = jsonMarshallingService.parseJson<Map<String, String>>(params.parametersInJson)["setToFail"]
+
+    @CordaInject
+    lateinit var jsonMarshallingService: JsonMarshallingService
 
     @Suspendable
     override fun call() {

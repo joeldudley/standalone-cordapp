@@ -30,6 +30,7 @@ import net.corda.v5.application.flows.Flow
 import net.corda.v5.application.flows.RpcStartFlowRequestParameters
 import net.corda.v5.httprpc.client.HttpRpcClient
 import net.corda.v5.httprpc.client.config.HttpRpcClientConfig
+import net.corda.v5.httprpc.client.exceptions.MissingRequestedResourceException
 import org.junit.jupiter.api.*
 import java.io.File
 import java.util.*
@@ -120,7 +121,7 @@ class ClientTests {
     /** We test that flows in libraries cannot be started via RPC. */
     @Test
     fun testFlows() {
-        assertThrows<PermissionException> {
+        assertThrows<MissingRequestedResourceException> {
             runFlowSync(FlowInLibrary::class.java)
         }
     }
@@ -167,6 +168,6 @@ class ClientTests {
         val clientId = "client-${UUID.randomUUID()}"
         val rpcStartFlowRequest = RpcStartFlowRequest(flowClass.name, clientId, rpcStartFlowRequestParameters)
         val rpcFlowStartResponse = httpRpcOps.startFlow(rpcStartFlowRequest)
-        return rpcFlowStartResponse.stateMachineRunId.uuid.toString()
+        return rpcFlowStartResponse.flowId.uuid.toString()
     }
 }
