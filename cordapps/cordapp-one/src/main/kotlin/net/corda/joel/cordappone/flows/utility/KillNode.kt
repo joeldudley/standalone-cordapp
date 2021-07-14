@@ -15,28 +15,29 @@ import kotlin.system.exitProcess
  */
 @InitiatingFlow
 @StartableByRPC
-class KillNode @JsonConstructor constructor(params: RpcStartFlowRequestParameters) : Flow<Unit> {
+class KillNode @JsonConstructor constructor(private val params: RpcStartFlowRequestParameters) : Flow<Unit> {
 
     companion object {
-        // If we don't condition the exit on some variable, then when the node restarts it will rerun the flow and exit
-        // again.
+        // Conditioning the exit on a static variable means that the variable is reset to false after the node
+        // restarts, avoiding it exiting in an infinite loop.
         private var shouldFail = false
     }
-
-    private val setToFail = jsonMarshallingService.parseJson<Map<String, String>>(params.parametersInJson)["setToFail"]
 
     @CordaInject
     lateinit var jsonMarshallingService: JsonMarshallingService
 
     @Suspendable
     override fun call() {
-        if (setToFail == "true") {
+        val setToFail = jsonMarshallingService.parseJson<Map<String, Boolean>>(params.parametersInJson)["setToFail"]
+
+        if (setToFail == true) {
             shouldFail = true
-        } else {
-            if (shouldFail) {
-                println("Process will hang.")
-                exitProcess(0)
-            }
+            return
+        }
+
+        if (shouldFail) {
+            println("Process will hang.")
+            exitProcess(0)
         }
     }
 }

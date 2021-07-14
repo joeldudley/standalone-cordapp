@@ -11,13 +11,14 @@ import kotlin.system.exitProcess
 
 @InitiatingFlow
 @StartableByRPC
-class CanRestartFromCheckpoint @JsonConstructor constructor(params: RpcStartFlowRequestParameters) : Flow<Unit> {
+class CanRestartFromCheckpoint @JsonConstructor constructor(private val params: RpcStartFlowRequestParameters) :
+    Flow<Unit> {
 
     companion object {
+        // Conditioning the exit on a static variable means that the variable is reset to false after the node
+        // restarts, avoiding it exiting in an infinite loop.
         private var shouldFail = false
     }
-
-    private val setToFail = jsonMarshallingService.parseJson<Map<String, String>>(params.parametersInJson)["setToFail"]
 
     @CordaInject
     lateinit var flowIdentity: FlowIdentity
@@ -30,24 +31,26 @@ class CanRestartFromCheckpoint @JsonConstructor constructor(params: RpcStartFlow
 
     @Suspendable
     override fun call() {
-        if (setToFail == "true") {
+        val setToFail = jsonMarshallingService.parseJson<Map<String, Boolean>>(params.parametersInJson)["setToFail"]
+
+        if (setToFail == true) {
             shouldFail = true
-
-        } else {
-            println("Flow started.")
-
-            val msg = "messageSentToCreateCheckpoint"
-            val counterparty = flowIdentity.ourIdentity
-            flowMessaging.initiateFlow(counterparty).send(msg)
-
-            println("Message sent.")
-
-            if (shouldFail) {
-                println("Process will hang.")
-                exitProcess(0)
-            }
-
-            println("Flow continued.")
+            return
         }
+
+        println("Flow started.")
+
+        val msg = "messageSentToCreateCheckpoint"
+        val counterparty = flowIdentity.ourIdentity
+        flowMessaging.initiateFlow(counterparty).send(msg)
+
+        println("Message sent.")
+
+        if (shouldFail) {
+            println("Process will hang.")
+            exitProcess(0)
+        }
+
+        println("Flow continued.")
     }
 }
