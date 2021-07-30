@@ -1,9 +1,9 @@
 package net.corda.joel.client
 
 import net.corda.client.rpc.flow.FlowStarterRPCOps
-import net.corda.client.rpc.flow.RpcFlowStatus
+import net.corda.client.rpc.flow.RpcFlowOutcomeResponse
+import net.corda.client.rpc.flow.RpcFlowStatus.*
 import net.corda.client.rpc.flow.RpcStartFlowRequest
-import net.corda.v5.application.flows.Flow
 import net.corda.v5.application.flows.RpcStartFlowRequestParameters
 import net.corda.v5.httprpc.client.HttpRpcClient
 import net.corda.v5.httprpc.client.config.HttpRpcClientConfig
@@ -36,22 +36,23 @@ class ClientTests {
 
     @Test
     fun sampleTest() {
-        println(httpRpcOps.registeredFlows())
+        println(runFlowSync("net.corda.joel.TemplateFlow"))
     }
 
-    /** Run [flowClass] with [jsonArgs] and await the result. */
-    private fun runFlowSync(flowClass: Class<out Flow<*>>, jsonArgs: String = "") {
-        val flowUuid = runFlowAsync(flowClass, jsonArgs)
-        while (httpRpcOps.getFlowOutcome(flowUuid).status != RpcFlowStatus.COMPLETED) {
+    /** Run [flowName] with [jsonArgs] and await the result. */
+    private fun runFlowSync(flowName: String, jsonArgs: String = ""): RpcFlowOutcomeResponse {
+        val flowUuid = runFlowAsync(flowName, jsonArgs)
+        while (httpRpcOps.getFlowOutcome(flowUuid).status in listOf(UNKNOWN, RUNNING, PAUSED)) {
             Thread.sleep(100)
         }
+        return httpRpcOps.getFlowOutcome(flowUuid)
     }
 
-    /** Run [flowClass] with [jsonArgs] and return the flow's UUID as a string. */
-    private fun runFlowAsync(flowClass: Class<out Flow<*>>, jsonArgs: String = ""): String {
+    /** Run [flowName] with [jsonArgs] and return the flow's UUID as a string. */
+    private fun runFlowAsync(flowName: String, jsonArgs: String = ""): String {
         val rpcStartFlowRequestParameters = RpcStartFlowRequestParameters(jsonArgs)
         val clientId = "client-${UUID.randomUUID()}"
-        val rpcStartFlowRequest = RpcStartFlowRequest(flowClass.name, clientId, rpcStartFlowRequestParameters)
+        val rpcStartFlowRequest = RpcStartFlowRequest(flowName, clientId, rpcStartFlowRequestParameters)
         val rpcFlowStartResponse = httpRpcOps.startFlow(rpcStartFlowRequest)
         return rpcFlowStartResponse.flowId.uuid.toString()
     }
