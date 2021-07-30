@@ -1,0 +1,44 @@
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url = "$artifactoryContextUrl/corda-releases"
+    }
+    maven {
+        url = "$artifactoryContextUrl/corda-dependencies"
+    }
+}
+
+apply plugin: "kotlin"
+apply plugin: 'net.corda.plugins.cordapp-cpk'
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+    kotlinOptions {
+        languageVersion = "1.4"
+        apiVersion = "1.4"
+        jvmTarget = "11"
+        freeCompilerArgs += ["-Xjvm-default=all"]
+    }
+}
+
+dependencies {
+    cordaProvided "$cordaReleaseGroup:corda-application:$cordaVersion"
+    cordaProvided "$cordaReleaseGroup:corda-flows:$cordaVersion"
+    cordaProvided "$cordaReleaseGroup:corda-ledger:$cordaVersion"
+    cordaProvided "$cordaReleaseGroup:corda-serialization:$cordaVersion"
+
+    // We also include some popular library dependencies, just to check that these can be loaded as libraries without
+    // issue. We don't include any non-OSGi dependencies, which can't be loaded.
+    // TODO: Re-enable once Corda stops leaking these libraries.
+//    implementation "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
+//    implementation "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
+//    implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+}
+
+cordapp {
+    targetPlatformVersion platformVersion.toInteger()
+    workflow {
+        name "CorDapp One"
+        versionId 1
+    }
+}

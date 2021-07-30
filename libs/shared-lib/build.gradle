@@ -1,9 +1,0 @@
-plugins {
-    id "biz.aQute.bnd.builder"
-}
-
-dependencies {
-    cordaProvided "$cordaReleaseGroup:corda-application:$corda_release_version"
-
-    compileOnly "org.osgi:osgi.annotation:$osgiVersion"
-}

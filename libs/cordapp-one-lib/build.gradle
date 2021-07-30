@@ -1,9 +1,0 @@
-plugins {
-    id "biz.aQute.bnd.builder"
-}
-
-dependencies {
-    implementation "org.osgi:osgi.core:$osgiVersion"
-
-    compileOnly "org.osgi:osgi.annotation:$osgiVersion"
-}

@@ -1,12 +1,21 @@
-dependencies {
-    testImplementation "$cordaReleaseGroup:corda-client-extensions-rpc:$corda_release_version"
-    testImplementation "$cordaReleaseGroup:corda-client-rpc:$corda_release_version"
-    testImplementation "$cordaReleaseGroup:corda-http-rpc-client:$corda_release_version"
-    testImplementation "$cordaReleaseGroup:corda-ledger:$corda_release_version"
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url = "$artifactoryContextUrl/corda-releases"
+    }
+    maven {
+        url = "$artifactoryContextUrl/corda-dependencies"
+    }
+}
 
-    testImplementation project(":cordapps:cordapp-one")
-    testImplementation project(":cordapps:cordapp-two")
-    testImplementation project(":libs:shared-lib")
+apply plugin: "kotlin"
+
+dependencies {
+    testImplementation "$cordaReleaseGroup:corda-client-extensions-rpc:$cordaVersion"
+    testImplementation "$cordaReleaseGroup:corda-client-rpc:$cordaVersion"
+    testImplementation "$cordaReleaseGroup:corda-http-rpc-client:$cordaVersion"
+    testImplementation "$cordaReleaseGroup:corda-ledger:$cordaVersion"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"

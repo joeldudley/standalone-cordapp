@@ -1,21 +1,2 @@
-pluginManagement {
-    plugins {
-        id "net.corda.cordapp.cordapp-configuration" version corda_release_version
-    }
-
-    repositories {
-        mavenLocal()
-    }
-}
-
-include "cordapps:cordapp-one"
-include "cordapps:cordapp-two"
-include "cordapps:cordapp-to-be-stopped-and-started"
-include "libs:shared-lib"
-include "libs:cordapp-one-lib"
-include "client"
-include "bad-cordapps:cordapp-imports-non-core-platform-bundle"
-include "bad-cordapps:cordapp-has-cordapp-dependency-on-library"
-include "bad-cordapps:cordapp-has-same-bundle-symbolic-name"
-include "bad-cordapps:cordapp-has-same-flow"
-include "bad-cordapps:cordapp-has-same-contract"
+include 'cordapp'
+include 'client'
